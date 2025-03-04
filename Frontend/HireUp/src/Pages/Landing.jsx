@@ -38,7 +38,7 @@ const Landing = () => {
                     </div>
                 </section>
                 <NavLink
-                    className="text-white block text-center flex items-center justify-center"
+                    className="text-white block text-center items-center justify-center"
                     style={{
                         backgroundImage: `url(${blue_button_gradient})`,
                     }}
