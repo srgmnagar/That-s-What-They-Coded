@@ -3,6 +3,7 @@ import bg from '../Images/Landing/bg.png'
 import logo from '../Images/Landing/logo.png'
 import { NavLink } from 'react-router-dom'
 import blue_button_gradient from '../Images/Landing/blue_button_gradient.png'
+import ReviewsSection from '../Components/ReviewSection'
 
 const Landing = () => {
     return (
@@ -47,6 +48,10 @@ const Landing = () => {
                 </NavLink>
 
             </header>
+            <section >
+
+            <ReviewsSection />
+            </section>
 
         </div>
     )

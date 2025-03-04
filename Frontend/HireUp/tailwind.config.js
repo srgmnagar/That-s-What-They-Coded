@@ -9,6 +9,7 @@ export default {
       fontFamily: {
         'Orbitron': ['Orbitron', 'mono'],
         'Sora': ['Sora', 'sans-serif'],
+        'Exo': ['Exo', 'sans-serif']
       },
     },
   },
