@@ -38,19 +38,20 @@ const Landing = () => {
 
                     </div>
                 </section>
-                <NavLink
-                    className="text-white block text-center items-center justify-center"
-                    style={{
-                        backgroundImage: `url(${blue_button_gradient})`,
-                    }}
-                >
-                    Take a Test
-                </NavLink>
+      Glowing effect
+      <div className="absolute w-64 h-32 bg-purple-500 opacity-50 blur-3xl rounded-full"></div>
+
+      {/* Button */}
+      <button className="relative px-8 py-4 text-white text-2xl font-semibold rounded-full bg-transparent border-none cursor-pointer">
+        Hire Smarter
+      </button>
+
 
             </header>
             <section >
 
             <ReviewsSection />
+            
             </section>
 
         </div>
