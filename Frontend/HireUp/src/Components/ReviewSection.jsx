@@ -75,10 +75,10 @@ const ReviewsSection = () => {
   };
 
   return (
-    <div className="w-full max-w-6xl py-20 mx-auto">
+    <div className="w-[80%] max-w-6xl py-20 mx-auto">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Candidate Reviews */}
-        <div className="relative p-8 rounded-3xl backdrop-blur-sm" 
+        <div className="relative p-5 md:p-8 rounded-3xl backdrop-blur-sm" 
           style={{
             background: "radial-gradient(circle at 50% 60%, rgba(74, 155, 212, 0.3) 0%, rgba(10, 16, 37, 0.1) 100%)",
             boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
@@ -98,7 +98,7 @@ const ReviewsSection = () => {
             </button>
             
             <div className="flex-1 min-h-[200px] font-Exo">
-              <p className="text-gray-300 mb-4margin-auto leading-relaxed">
+              <p className="text-gray-300 mb-4 margin-auto leading-relaxed">
                 {candidateReviews[currentCandidateReview].text}
               </p>
               <div className="flex justify-center mt-4">
@@ -117,13 +117,13 @@ const ReviewsSection = () => {
         </div>
         
         {/* Recruiter Reviews */}
-        <div className="relative p-8 rounded-3xl backdrop-blur-sm" 
+        <div className="relative p-5 md:p-8 rounded-3xl backdrop-blur-sm flex flex-col " 
           style={{
             background: "radial-gradient(circle at 50% 60%, rgba(105, 45, 162, 0.3) 0%, rgba(10, 16, 37, 0.1) 100%)",
             boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
             border: "1px solid rgba(166, 123, 212, 0.1)"
           }}>
-          <h2 className="text-3xl font-['Orbitron', sans-serif] text-[#a67bd4] mb-6 text-center md:text-right">
+          <h2 className="text-3xl font-Exo text-[#a67bd4] mb-6 text-center ">
             Recruiter reviews
           </h2>
           
@@ -137,7 +137,7 @@ const ReviewsSection = () => {
             </button>
             
             <div className="flex-1 min-h-[200px]">
-              <p className="text-gray-300 italic mb-4 leading-relaxed">
+              <p className="text-gray-300 font-Exo mb-4 leading-relaxed">
                 {recruiterReviews[currentRecruiterReview].text}
               </p>
               <div className="flex justify-center mt-4">
