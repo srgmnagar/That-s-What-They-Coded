@@ -97,7 +97,7 @@ const ReviewsSection = () => {
               <ChevronLeft className="w-6 h-6" />
             </button>
             
-            <div className="flex-1 min-h-[200px] font-Exo">
+            <div className="flex flex-col justify-between font-Exo">
               <p className="text-gray-300 mb-4 margin-auto leading-relaxed">
                 {candidateReviews[currentCandidateReview].text}
               </p>

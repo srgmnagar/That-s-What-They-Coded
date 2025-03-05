@@ -1,0 +1,26 @@
+
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateY(200px) scale(0.3);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0px) scale(1);
+    }
+}
+
+.start {
+    
+    animation: appear both; 
+    animation-timeline: view(90% 10%);
+ 
+}
+.start2 {
+    
+    animation: start 0.5s ease-in-out ; 
+animation-delay: 0.1s;
+animation-fill-mode: forwards; 
+    opacity: 0; 
+}

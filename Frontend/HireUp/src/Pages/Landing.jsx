@@ -1,4 +1,5 @@
 import React from 'react'
+import '../App.css';
 import bg from '../Images/Landing/bg.png'
 import logo from '../Images/Landing/logo.png'
 import { NavLink } from 'react-router-dom'
@@ -24,7 +25,7 @@ const Landing = () => {
                 <section className='max-w-[90%] md:max-w-[90%] sm:mx-12 md:ml-28 mx-10 xl:ml-44'>
                     <div className='flex flex-col items-left justify-start gap-6 '>
                         <h2 className='xl:text-6xl md:text-5xl text-4xl font-medium font-Orbitron flex flex-col'>
-                            <span className='bg-gradient-to-r from-[#00C2FF] to-[#E100FF] text-transparent bg-clip-text'>
+                            <span className=' bg-gradient-to-r from-[#00C2FF] to-[#E100FF] text-transparent bg-clip-text'>
                                 SKILLS OVER
                             </span>
                             <span className='bg-gradient-to-r from-[#00C2FF] to-[#E100FF] text-transparent bg-clip-text'>
@@ -64,16 +65,17 @@ const Landing = () => {
                     <img className='w-24' src={arrow} alt="" />
                 </div>
             </header>
-            <section className='relative flex flex-col items-center justify-center gap-20'>
+            <section className='start relative flex flex-col items-center justify-center gap-20'>
                 <div>
                 <img className='absolute md:w-[8%] w-[17%] right-[8%] top-[4%]' src={chatbot} alt="" />
                 <div style={
                     {
                         background: " radial-gradient(circle at 50% 60%, rgb(74 39 125 / 63%) 0%, rgba(138, 99, 205, 0.09) 100%)",
                         borderradius: "40px",
+                        lineHeight: "1.8",
 
                     }
-                } className='relative w-[85%] sm:w-[80%] sm:px-24 sm:py-16  px-12 py-7 mx-auto mt-20 rounded-3xl   text-white font-Exo sm:text-2xl text-lg leading-loose font-extralight'>
+                } className='relative w-[85%] sm:w-[80%] sm:px-24 sm:py-16  px-12 py-7 mx-auto mt-20 rounded-3xl   text-white font-Exo sm:text-2xl text-lg font-extralight'>
                     HireUp is a smart competency platform that redefines hiring and skill assessment. We empower candidates to showcase their strengths through structured evaluations while providing recruiters with data-driven talent insights. With gamified XP rewards, adaptive tests, and AI-driven analytics, we make career growth and hiring smarter, faster, and more efficient.
                 </div>
                 </div>
@@ -102,9 +104,9 @@ const Landing = () => {
                 </div>
 
             </section>
-            <section >
+            <section className='start' >
 
-                <ReviewsSection />
+                <ReviewsSection  />
 
             </section>
 
