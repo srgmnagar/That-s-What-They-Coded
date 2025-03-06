@@ -1,5 +1,8 @@
 
-
+.peer::placeholder {
+    font-size: 14px;
+    font-weight: 200;
+  }
 @keyframes appear {
     from {
         opacity: 0;
