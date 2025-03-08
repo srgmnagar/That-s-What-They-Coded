@@ -63,7 +63,7 @@ const ResumeUpload = () => {
     if (!file) return;
   
     const formData = new FormData();
-    formData.append('document', file);
+    formData.append('resume_image', file);
   
     setUploadStatus('uploading');
     console.log(file);
@@ -71,7 +71,7 @@ const ResumeUpload = () => {
       // Replace with your actual API endpoint
       const response = await fetch(api_link + 'base/extract_resume_skills/', {
         method: 'POST',
-        body: file,
+        body: formData,
         headers: {
           "Authorization": `Bearer ${JSON.parse(localStorage.getItem("authTokens")).access}`,
         },
