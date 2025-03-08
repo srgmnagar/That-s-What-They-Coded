@@ -6,58 +6,42 @@ import { jwtDecode } from "jwt-decode";
 import AuthContext from "../../Components/AuthProvider";
 
 function C_Login() {
+  const { setAuth } = useContext(AuthContext);
   const [username, setUsername] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
-  let [authTokens, setAuthTokens] = useState(() =>
-    localStorage.getItem("authTokens")
-      ? JSON.parse(localStorage.getItem("authTokens"))
-      : null
-  );
-  let [loading, setLoading] = useState(true);
-  let [user, setUser] = useState(() =>
-    localStorage.getItem("authTokens")
-      ? JSON.parse(localStorage.getItem("authTokens"))
-      : null
-  );
-
-  let api_link = "http://127.0.0.1:8000/";
   const navigate = useNavigate();
 
-  let loginUser = async (username, password) => {
-    let response = await fetch(api_link + "base/auth/token/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: username,
-        password: password,
-      }),
-    });
-    if (response.status === 200) {
-      let data = await response.json();
-      setAuthTokens(data);
-      setUser(jwtDecode(data.access));
-      localStorage.setItem("authTokens", JSON.stringify(data));
-      navigate("/candidate/profile");
-    } else {
-      alert("Something went wrong");
-      console.log(response);
-    }
-  };
+  const api_link = "http://127.0.0.1:8000/";
 
-  let logoutUser = () => {
-    setAuthTokens(null);
-    setUser(null);
-    localStorage.removeItem("authTokens");
-    navigate("/");
+  const loginUser = async (username, password) => {
+    try {
+      const response = await fetch(api_link + "base/auth/token/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (response.status === 200) {
+        const data = await response.json();
+        setAuth(data); // Set authentication state
+        localStorage.setItem("authTokens", JSON.stringify(data));
+        navigate("/candidate/profile");
+      } else {
+        alert("Invalid credentials. Please try again.");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Something went wrong. Please try again later.");
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     loginUser(username, password);
-    setUsername(""); // Reset fields after login attempt
+    setUsername("");
     setPassword("");
   };
 
@@ -83,11 +67,11 @@ function C_Login() {
         <form onSubmit={handleSubmit} className="space-y-6 max-w-[85%] mx-auto">
           <div>
             <input
-              type="username"
+              type="text"
               id="username"
               name="username"
               placeholder="Username"
-              value={username} // ✅ Fixed
+              value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="peer w-full px-4 py-3 bg-transparent border border-[#ffffff6e] text-white placeholder-[#CACACA] focus:outline-none focus:border-[#ffffff] transition-colors"
               required
@@ -100,12 +84,11 @@ function C_Login() {
               id="password"
               name="password"
               placeholder="Enter Your Password"
-              value={password} // ✅ Fixed
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="peer w-full px-4 py-3 bg-transparent border border-[#ffffff6e] text-white placeholder-[#CACACA] focus:outline-none focus:border-[#ffffff] transition-colors"
               required
             />
-
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
@@ -125,7 +108,7 @@ function C_Login() {
           <div className="text-center font-light font-Sora text-[#c2c2c2]">
             Don't have an account?{" "}
             <Link
-              to="/candidate/signup"
+              to="/recruiter/signup"
               className="font-semibold text-white transition-colors"
             >
               Sign Up
