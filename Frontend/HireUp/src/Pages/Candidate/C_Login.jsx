@@ -40,7 +40,7 @@ function C_Login() {
       setAuthTokens(data);
       setUser(jwtDecode(data.access));
       localStorage.setItem("authTokens", JSON.stringify(data));
-      navigate("/candidate/resumeupload");
+      navigate("/candidate/profile");
     } else {
       alert("Something went wrong");
       console.log(response);

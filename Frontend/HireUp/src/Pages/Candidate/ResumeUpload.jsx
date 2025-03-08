@@ -3,6 +3,7 @@ import { FileUp, X, Upload, AlertCircle, CheckCircle2, Loader2 } from 'lucide-re
 import axios from 'axios';
 import Nav from '../../Components/Nav';
 
+
 const ResumeUpload = () => {
   const [file, setFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
