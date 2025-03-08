@@ -14,7 +14,7 @@ function Nav() {
             <nav className='flex flex-col justify-evenly items-center  h-full bg-[#3A175C] rounded-3xl px-5 py-10'>
                 <div className='flex flex-col justify-center items-center gap-7 h-full'>
 
-                <Link>
+                <Link to={'/recruiter/dashboard'}>
                 <img  className='w-10' src={dash} alt="" />
                 </Link>
                 <Link>
@@ -23,7 +23,7 @@ function Nav() {
                 <Link>
                 <img  className='w-10' src={community} alt="" />
                 </Link>
-                <Link>
+                <Link to={'/recruiter/addjob'}>
                 <img  className='w-10' src={jobs} alt="" />
                 </Link>
                 <Link>
@@ -31,7 +31,7 @@ function Nav() {
                 </Link>
                 </div>
                 <div>
-                <Link to={'/candidate/profile'}>
+                <Link to={'/recruiter/profile'}>
                 <User size={35} className=' text-white' />
                 </Link>
                 </div>

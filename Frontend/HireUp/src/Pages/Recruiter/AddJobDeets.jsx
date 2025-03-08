@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { PenSquare, Briefcase, MapPin, DollarSign, Calendar, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import Nav from '../../Components/Nav';
 
 function AddJobDeets() {
   const [jobDetails, setJobDetails] = useState({
@@ -50,7 +51,9 @@ function AddJobDeets() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+    <div className='flex p-5 '>
+      <Nav />
+      <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-6">Add Job Details</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
@@ -178,6 +181,8 @@ function AddJobDeets() {
         </div>
       </form>
     </div>
+    </div>
+    
   );
 }
 
