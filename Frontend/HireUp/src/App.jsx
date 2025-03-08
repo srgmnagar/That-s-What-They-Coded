@@ -10,6 +10,7 @@ import Dashboard from './Pages/Recruiter/Dashboard';
 import ResumeUpload from './Pages/Candidate/ResumeUpload';
 import Profile from './Pages/Candidate/Profile';
 import CompanyProfile from './Pages/Recruiter/CompanyProfile';
+import AddJobDeets from './Pages/Recruiter/AddJobDeets';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="/candidate/resumeupload" element={<ResumeUpload />} />
             <Route path="/candidate/profile" element={<Profile />} />
             <Route path="/recruiter/profile" element={<CompanyProfile />} />
+            <Route path="/recruiter/addjob" element={<AddJobDeets />} />
           </Routes>
         
       </AuthProvider>
