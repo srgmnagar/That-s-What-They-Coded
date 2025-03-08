@@ -223,7 +223,7 @@ const handleSubmit = (e) => {
 
           <div className="text-center font-light font-Sora text-[#c2c2c2]">
             Already have an account?{' '}
-            <a href="/login" className="font-semibold text-white transition-colors">
+            <a href="/candidate/login" className="font-semibold text-white transition-colors">
               Log In
             </a>
           </div>

@@ -1,10 +1,9 @@
-import React from 'react'
 import React, { useState, useEffect } from 'react';
 import { Building2, Globe, Briefcase, PenSquare } from 'lucide-react';
 
 function CompanyDeets() {
     
-    const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
     company: "",
     company_website: "",
@@ -16,9 +15,17 @@ function CompanyDeets() {
     fetchProfile();
   }, []);
 
+  const api_link = "http://127.0.0.1:8000/"
+
   const fetchProfile = async () => {
     try {
-      const response = await fetch("/api/recruiter-profile");
+      const response = await fetch(api_link + "base/recruiter_profile_detail/", {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          "Authorization": `Bearer ${JSON.parse(localStorage.getItem("authTokens")).access}`,
+        },
+      });
       const data = await response.json();
       setProfile(data);
     } catch (error) {
@@ -29,10 +36,11 @@ function CompanyDeets() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("/api/recruiter-profile", {
+      const response = await fetch(api_link + "base/recruiter_profile_detail/", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${JSON.parse(localStorage.getItem("authTokens")).access}`,
         },
         body: JSON.stringify(profile),
       });

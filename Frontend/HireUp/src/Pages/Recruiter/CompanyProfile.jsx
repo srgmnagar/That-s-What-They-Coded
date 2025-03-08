@@ -6,9 +6,9 @@ export default function CompanyProfile() {
     <div>
       <div className="min-h-screen bg-gray-100 py-8">
       <div className="max-w-7xl mx-auto px-4">
-        <CompanyDeet />
+        <CompanyDeets />
         <div className="mt-8">
-          <JobForm />
+          {/* <JobForm /> */}
         </div>
       </div>
     </div>

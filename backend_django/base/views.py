@@ -197,9 +197,9 @@ def job_opportunity_list(request):
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
-def job_opportunity_detail(request, pk):
+def job_opportunity_detail(request):
     """Retrieve, update or delete a job opportunity"""
-    job = get_object_or_404(JobOpportunity, pk=pk)
+    job = get_object_or_404(JobOpportunity)
     
     # Check if the user is the recruiter who created the job
     if request.method in ['PUT', 'DELETE'] and job.recruiter != request.user:

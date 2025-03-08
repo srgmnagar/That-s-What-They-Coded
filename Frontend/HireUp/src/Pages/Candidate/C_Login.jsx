@@ -125,7 +125,7 @@ function C_Login() {
           <div className="text-center font-light font-Sora text-[#c2c2c2]">
             Don't have an account?{" "}
             <Link
-              to="/recruiter/signup"
+              to="/candidate/signup"
               className="font-semibold text-white transition-colors"
             >
               Sign Up
