@@ -28,5 +28,5 @@ urlpatterns = [
     path("mark_notification_read/", mark_notification_read, name="mark_notification_read"),
     path("delete_notification/", delete_notification, name="delete_notification"),
 
-    path('api/resume/extract-skills/', extract_resume_skills, name='extract_resume_skills'),
+    path('extract_resume_skills/', extract_resume_skills, name='extract_resume_skills'),
 ]
