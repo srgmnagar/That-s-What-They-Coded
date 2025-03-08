@@ -268,3 +268,12 @@ class Notification(models.Model):
     
     class Meta:
         ordering = ['-created_at']
+        
+class Candidate(models.Model):
+    candidate_id = models.AutoField(primary_key=True)
+    test_score = models.FloatField()
+    total_time = models.FloatField()
+    total_easy = models.IntegerField()
+    total_medium = models.IntegerField()
+    total_hard = models.IntegerField()
+    query_group = models.IntegerField()
