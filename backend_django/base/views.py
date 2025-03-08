@@ -47,6 +47,7 @@ def profile_detail(request):
 @permission_classes([IsAuthenticated])
 def candidate_profile_detail(request):
     """Get or update the candidate profile for the authenticated user"""
+    skills_list = ["Python", "Java", "C++", "SQL", "Machine Learning", "Deep Learning","Data Science", "TensorFlow", "PyTorch", "NLP", "Computer Vision","Data Analysis", "Tableau", "Power BI", "Excel", "Hadoop", "Spark","AWS", "Azure", "Google Cloud", "Cybersecurity", "Networking","Linux", "Git", "Docker", "Kubernetes", "Leadership", "Communication","Problem Solving", "Teamwork", "Project Management"]
     try:
         profile = Profile.objects.get(user=request.user)
         candidate_profile, created = CandidateProfile.objects.get_or_create(profile=profile)
