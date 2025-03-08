@@ -91,7 +91,10 @@ const ResumeUpload = () => {
   };
 
   return (
-    <div className="h-screen bg-[#26004A] flex p-5">
+    <div
+    style={{
+      background: 'linear-gradient(115deg, rgba(38, 0, 74, 0.73) 2.22%, rgba(105, 36, 171, 0.73) 103.12%)'
+    }} className="h-screen  flex p-5">
         <Nav/>
         <div className='flex justify-center items-center w-full'>
       <div className="bg-white rounded-2xl shadow-lg p-8">
