@@ -12,6 +12,8 @@ import Profile from './Pages/Candidate/Profile';
 import CompanyProfile from './Pages/Recruiter/CompanyProfile';
 import AddJobDeets from './Pages/Recruiter/AddJobDeets';
 import TestEdit from './Pages/Recruiter/TestEdit';
+import TestCreation from './Pages/Recruiter/TestCreation';
+
 
 function App() {
   return (
@@ -29,6 +31,7 @@ function App() {
             <Route path="/candidate/profile" element={<Profile />} />
             <Route path="/recruiter/profile" element={<CompanyProfile />} />
             <Route path="/recruiter/addjob" element={<AddJobDeets />} />
+            <Route path="/recruiter/testcreation" element={<TestCreation />} />
             <Route path="/recruiter/testedit" element={<TestEdit />} />
           </Routes>
         
