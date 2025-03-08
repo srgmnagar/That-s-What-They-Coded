@@ -6,7 +6,7 @@ import uuid
 # Enhanced Profile Model
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    type = models.CharField(max_length=100, choices=(
+    role = models.CharField(max_length=10, choices=(
         ("recruiter", "recruiter"),
         ("candidate", "candidate"),
     ))
@@ -17,7 +17,7 @@ class Profile(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return f"{self.user.username}'s Profile ({self.type})"
+        return f"{self.user.username}'s Profile ({self.role})"
 
 # Candidate Profile Extensions
 class CandidateProfile(models.Model):

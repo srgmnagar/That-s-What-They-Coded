@@ -1,0 +1,5 @@
+backend_django/__pycache__
+db.sqlite3
+base/__pycache__
+base/migrations
+base/oauth/__pycache__
