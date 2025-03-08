@@ -41,7 +41,7 @@ class RecruiterProfileSerializer(serializers.ModelSerializer):
 
 class CandidateProfileSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(read_only=True)
-    skills = SkillSerializer(many=True, read_only=True)
+    skills = serializers.SerializerMethodField()  # Return skill names instead of objects
     skill_ids = serializers.PrimaryKeyRelatedField(
         queryset=Skill.objects.all(),
         write_only=True,
@@ -55,6 +55,11 @@ class CandidateProfileSerializer(serializers.ModelSerializer):
         fields = ['id', 'profile', 'resume', 'skills', 'skill_ids', 'years_of_experience', 
                   'education', 'current_position', 'linkedin_profile', 'github_profile']
         read_only_fields = ['id']
+
+    def get_skills(self, obj):
+        """Return skill names instead of skill objects"""
+        return [skill.name for skill in obj.skills.all()]
+
 
 class JobOpportunitySerializer(serializers.ModelSerializer):
     recruiter = serializers.PrimaryKeyRelatedField(

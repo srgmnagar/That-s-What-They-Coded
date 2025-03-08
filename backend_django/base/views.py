@@ -195,31 +195,42 @@ def job_opportunity_list(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+from django.shortcuts import get_object_or_404
+from .models import JobOpportunity
+from .serializers import JobOpportunitySerializer
+
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
-def job_opportunity_detail(request):
-    """Retrieve, update or delete a job opportunity"""
-    job = get_object_or_404(JobOpportunity)
-    
-    # Check if the user is the recruiter who created the job
+def job_opportunity_detail(request, job_id):
+    """Retrieve, update, or delete a job opportunity"""
+
+    # Fetch job with the given ID
+    job = get_object_or_404(JobOpportunity, id=job_id)
+
+    # Check if the user is the recruiter who created the job (before modifying)
     if request.method in ['PUT', 'DELETE'] and job.recruiter != request.user:
         return Response({'error': 'You do not have permission to perform this action'},
                         status=status.HTTP_403_FORBIDDEN)
-    
-    if request.method == 'GET':
-        serializer = JobOpportunitySerializer(job)
-        return Response(serializer.data)
-    
-    elif request.method == 'PUT':
+
+    if request.method == 'PUT':
         serializer = JobOpportunitySerializer(job, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+    elif request.method == 'GET':
+        serializer = JobOpportunitySerializer(job)
+        return Response(serializer.data)
+
     elif request.method == 'DELETE':
         job.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 # CandidateApplication Views
 from django.db.models import Count
