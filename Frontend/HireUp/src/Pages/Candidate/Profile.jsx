@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { Pencil, FileText, Github, Linkedin, Briefcase, GraduationCap, Code, Clock, Save, X } from 'lucide-react';
 
 function Profile() {
@@ -36,12 +35,16 @@ function Profile() {
 
   const fetchProfileData = async () => {
     try {
+      const authTokens = JSON.parse(localStorage.getItem("authTokens"));
+      if (!authTokens || !authTokens.access) {
+        throw new Error('No authentication token found');
+      }
+
       const response = await fetch(api_link + 'base/candidate_profile_detail/', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          "Authorization": `Bearer ${JSON.parse(localStorage.getItem("authTokens")).access}`,
-          // Add other necessary headers if required
+          "Authorization": `Bearer ${authTokens.access}`,
         },
       });
   
@@ -50,12 +53,18 @@ function Profile() {
       }
   
       const data = await response.json();
-      setProfileData(data);
-      setEditData(data);
+      
+      // Ensure skills is always an array
+      const sanitizedData = {
+        ...data,
+        skills: Array.isArray(data.skills) ? data.skills : []
+      };
+      
+      setProfileData(sanitizedData);
+      setEditData(sanitizedData);
       setLoading(false);
     } catch (err) {
-        console.log(err);
-        
+      console.error("Profile fetch error:", err);
       setError('Failed to load profile data');
       setLoading(false);
     }
@@ -63,34 +72,59 @@ function Profile() {
   
   const handleSave = async () => {
     try {
-    // console.log(localStorage.getItem("authTokens").access);
+      const authTokens = JSON.parse(localStorage.getItem("authTokens"));
+      if (!authTokens || !authTokens.access) {
+        throw new Error('No authentication token found');
+      }
+      
+      // Ensure skills is an array before sending
+      const dataToSend = {
+        ...editData,
+        skills: Array.isArray(editData.skills) ? editData.skills : []
+      };
+      
       const response = await fetch(api_link + 'base/candidate_profile_detail/', {
-        method: 'PUT', // Using PUT method
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          "Authorization": `Bearer ${JSON.parse(localStorage.getItem("authTokens")).access}`,
+          "Authorization": `Bearer ${authTokens.access}`,
         },
-        body: JSON.stringify(editData), 
+        body: JSON.stringify(dataToSend), 
       });
   
       if (!response.ok) {
         throw new Error('Failed to update profile');
       }
   
-      const updatedData = await response.json(); 
-      setProfileData(updatedData);
+      const updatedData = await response.json();
+      
+      // Ensure skills is always an array in the response
+      const sanitizedData = {
+        ...updatedData,
+        skills: Array.isArray(updatedData.skills) ? updatedData.skills : []
+      };
+      
+      setProfileData(sanitizedData);
       setIsEditing(false);
       setError('');
     } catch (err) {
+      console.error("Profile update error:", err);
       setError('Failed to update profile');
     }
   };
   
-
   const handleCancel = () => {
     setEditData(profileData);
     setIsEditing(false);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-gray-50">
+        <p className="text-lg">Loading profile...</p>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -106,7 +140,7 @@ function Profile() {
               {!isEditing ? (
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-[white/10 ]rounded-lg text-white hover:bg-white/20 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-[white/10] rounded-lg text-white hover:bg-white/20 transition-colors"
                 >
                   <Pencil size={18} />
                   Edit Profile
@@ -163,7 +197,7 @@ function Profile() {
               {isEditing ? (
                 <input
                   type="text"
-                  value={editData.current_position}
+                  value={editData.current_position || ""}
                   onChange={(e) => setEditData({...editData, current_position: e.target.value})}
                   className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 />
@@ -181,12 +215,12 @@ function Profile() {
               {isEditing ? (
                 <input
                   type="number"
-                  value={editData.years_of_experience}
-                  onChange={(e) => setEditData({...editData, years_of_experience: parseInt(e.target.value)})}
+                  value={editData.years_of_experience || 0}
+                  onChange={(e) => setEditData({...editData, years_of_experience: parseInt(e.target.value) || 0})}
                   className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 />
               ) : (
-                <p className="text-gray-600">{profileData.years_of_experience} years</p>
+                <p className="text-gray-600">{profileData.years_of_experience || 0} years</p>
               )}
             </div>
 
@@ -198,7 +232,7 @@ function Profile() {
               </div>
               {isEditing ? (
                 <textarea
-                  value={editData.education}
+                  value={editData.education || ""}
                   onChange={(e) => setEditData({...editData, education: e.target.value})}
                   className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   rows={3}
@@ -217,18 +251,22 @@ function Profile() {
               {isEditing ? (
                 <input
                   type="text"
-                  value={editData.skills.join(', ')}
-                  onChange={(e) => setEditData({...editData, skills: e.target.value.split(',').map(s => s.trim())})}
+                  value={Array.isArray(editData.skills) ? editData.skills.join(', ') : ""}
+                  onChange={(e) => setEditData({...editData, skills: e.target.value.split(',').map(s => s.trim()).filter(s => s)})}
                   className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   placeholder="Separate skills with commas"
                 />
               ) : (
                 <div className="flex flex-wrap gap-2">
-                  {profileData.skills.map((skill, index) => (
-                    <span key={index} className="px-3 py-1 bg-purple-100 text-purple-600 rounded-full">
-                      {skill}
-                    </span>
-                  ))}
+                  {Array.isArray(profileData.skills) && profileData.skills.length > 0 ? (
+                    profileData.skills.map((skill, index) => (
+                      <span key={index} className="px-3 py-1 bg-purple-100 text-purple-600 rounded-full">
+                        {skill}
+                      </span>
+                    ))
+                  ) : (
+                    <p className="text-gray-600">No skills specified</p>
+                  )}
                 </div>
               )}
             </div>
@@ -240,16 +278,20 @@ function Profile() {
                 {isEditing ? (
                   <input
                     type="url"
-                    value={editData.linkedin_profile}
+                    value={editData.linkedin_profile || ""}
                     onChange={(e) => setEditData({...editData, linkedin_profile: e.target.value})}
                     className="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     placeholder="LinkedIn URL"
                   />
                 ) : (
-                  <a href={profileData.linkedin_profile} target="_blank" rel="noopener noreferrer" 
-                     className="text-purple-600 hover:text-purple-700">
-                    LinkedIn Profile
-                  </a>
+                  profileData.linkedin_profile ? (
+                    <a href={profileData.linkedin_profile} target="_blank" rel="noopener noreferrer" 
+                      className="text-purple-600 hover:text-purple-700">
+                      LinkedIn Profile
+                    </a>
+                  ) : (
+                    <span className="text-gray-600">Not specified</span>
+                  )
                 )}
               </div>
               <div className="flex items-center gap-4">
@@ -257,16 +299,20 @@ function Profile() {
                 {isEditing ? (
                   <input
                     type="url"
-                    value={editData.github_profile}
+                    value={editData.github_profile || ""}
                     onChange={(e) => setEditData({...editData, github_profile: e.target.value})}
                     className="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     placeholder="GitHub URL"
                   />
                 ) : (
-                  <a href={profileData.github_profile} target="_blank" rel="noopener noreferrer"
-                     className="text-purple-600 hover:text-purple-700">
-                    GitHub Profile
-                  </a>
+                  profileData.github_profile ? (
+                    <a href={profileData.github_profile} target="_blank" rel="noopener noreferrer"
+                      className="text-purple-600 hover:text-purple-700">
+                      GitHub Profile
+                    </a>
+                  ) : (
+                    <span className="text-gray-600">Not specified</span>
+                  )
                 )}
               </div>
             </div>
@@ -278,5 +324,3 @@ function Profile() {
 }
 
 export default Profile;
-
-

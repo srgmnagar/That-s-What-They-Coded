@@ -41,7 +41,7 @@ class RecruiterProfileSerializer(serializers.ModelSerializer):
 
 class CandidateProfileSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(read_only=True)
-    skills = SkillSerializer(many=True, read_only=True)
+    skills = serializers.SerializerMethodField()  # Custom filtering logic for skills
     skill_ids = serializers.PrimaryKeyRelatedField(
         queryset=Skill.objects.all(),
         write_only=True,
@@ -55,6 +55,23 @@ class CandidateProfileSerializer(serializers.ModelSerializer):
         fields = ['id', 'profile', 'resume', 'skills', 'skill_ids', 'years_of_experience', 
                   'education', 'current_position', 'linkedin_profile', 'github_profile']
         read_only_fields = ['id']
+
+    def get_skills(self, obj):
+        """Return skill names that exist in the predefined skills list"""
+        skills_list = {
+            "python", "java", "c++", "sql", "machine learning", "deep learning", "data science", 
+            "tensorflow", "pytorch", "nlp", "computer vision", "data analysis", "tableau", "power bi",
+            "excel", "hadoop", "spark", "aws", "azure", "google cloud", "cybersecurity", "networking",
+            "linux", "git", "docker", "kubernetes", "leadership", "communication", "problem solving", 
+            "teamwork", "project management"
+        }
+        
+        return [
+            skill.name for skill in obj.skills.all() 
+            if skill.name.lower() in skills_list
+        ]
+
+
 
 class JobOpportunitySerializer(serializers.ModelSerializer):
     recruiter = serializers.PrimaryKeyRelatedField(
