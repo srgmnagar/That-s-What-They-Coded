@@ -3,40 +3,45 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
 import AuthContext from "../../Components/AuthProvider";
+import { jwtDecode } from "jwt-decode";
 
 function R_Login() {
   const { setAuth } = useContext(AuthContext);
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const api_link = "http://127.0.0.1:8000/";
 
-    axios
-      .post("https://auth-backend-138t.onrender.com/api/v1/users/login", {
-        email: email,
-        password: password,
-      })
-      .then((response) => {
-        const { accessToken, refreshToken } = response.data.data;
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("refreshToken", refreshToken);
-
-        console.log("Access Token:", accessToken);
-        console.log("Refresh Token:", refreshToken);
-
-        setAuth({ accessToken, refreshToken });
-        navigate("/recruiter/dashboard");
-      })
-      .catch((err) => {
-        console.log("error ", err);
-        alert("Invalid Credentials");
+  const loginUser = async (username, password) => {
+    try {
+      const response = await fetch(api_link + "base/auth/token/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
       });
 
-    // Reset fields after submission
-    setEmail("");
+      if (response.status === 200) {
+        const data = await response.json();
+        setAuth(data); // Set authentication state
+        localStorage.setItem("authTokens", JSON.stringify(data));
+        navigate("/recruiter/profile");
+      } else {
+        alert("Invalid credentials. Please try again.");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Something went wrong. Please try again later.");
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    loginUser(username, password);
+    setUsername(""); 
     setPassword("");
   };
 
@@ -62,11 +67,12 @@ function R_Login() {
         <form onSubmit={handleSubmit} className="space-y-6 max-w-[85%] mx-auto">
           <div>
             <input
-              type="email"
-              id="email"
-              placeholder="Email"
-              value={email} // ✅ Fixed
-              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              id="username"
+              name="username"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               className="peer w-full px-4 py-3 bg-transparent border border-[#ffffff6e] text-white placeholder-[#CACACA] focus:outline-none focus:border-[#ffffff] transition-colors"
               required
             />
@@ -76,13 +82,13 @@ function R_Login() {
             <input
               type={showPassword ? "text" : "password"}
               id="password"
+              name="password"
               placeholder="Enter Your Password"
-              value={password} // ✅ Fixed
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="peer w-full px-4 py-3 bg-transparent border border-[#ffffff6e] text-white placeholder-[#CACACA] focus:outline-none focus:border-[#ffffff] transition-colors"
               required
             />
-
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
