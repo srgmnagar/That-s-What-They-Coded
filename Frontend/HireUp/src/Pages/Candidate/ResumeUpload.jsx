@@ -6,6 +6,7 @@ import Nav from '../../Components/Nav';
 
 const ResumeUpload = () => {
   const [file, setFile] = useState(null);
+  const api_link = "http://127.0.0.1:8000/"
   const [isDragging, setIsDragging] = useState(false);
   const [uploadStatus, setUploadStatus] = useState('idle');
   const [errorMessage, setErrorMessage] = useState('');
@@ -52,6 +53,7 @@ const ResumeUpload = () => {
   const handleFileChange = (e) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile && validateFile(selectedFile)) {
+      console.log(selectedFile);
       setFile(selectedFile);
       setErrorMessage('');
     }
@@ -59,28 +61,38 @@ const ResumeUpload = () => {
 
   const handleUpload = async () => {
     if (!file) return;
-
+  
     const formData = new FormData();
     formData.append('document', file);
-
+  
     setUploadStatus('uploading');
-    
+    console.log(file);
     try {
       // Replace with your actual API endpoint
-      const response = await axios.post('https://your-api-endpoint/upload', formData, {
+      const response = await fetch(api_link + 'base/extract_resume_skills/', {
+        method: 'POST',
+        body: file,
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Authorization": `Bearer ${JSON.parse(localStorage.getItem("authTokens")).access}`,
         },
       });
-      
+  
+      if (!response.ok) {
+        throw new Error('Failed to upload file');
+      }
+  
+      const data = await response.json();
+      console.log(data);
       setUploadStatus('success');
-      console.log('Upload successful:', response.data);
+      console.log('Upload successful:', data);
     } catch (error) {
       setUploadStatus('error');
       setErrorMessage('Failed to upload file. Please try again.');
       console.error('Upload error:', error);
     }
   };
+  
+  
 
   const handleRemoveFile = () => {
     setFile(null);

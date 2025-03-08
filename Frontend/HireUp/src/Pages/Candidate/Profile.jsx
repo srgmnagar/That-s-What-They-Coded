@@ -63,21 +63,21 @@ function Profile() {
   
   const handleSave = async () => {
     try {
-      const response = await fetch('https://your-api/candidate_profile_detail/', {
+    // console.log(localStorage.getItem("authTokens").access);
+      const response = await fetch(api_link + 'base/candidate_profile_detail/', {
         method: 'PUT', // Using PUT method
         headers: {
           'Content-Type': 'application/json',
-          "Authorization": "Bearer " + String(localStorage.getItem("authTokens", JSON.stringify(data)).access),
-          // Add other necessary headers if required
+          "Authorization": `Bearer ${JSON.parse(localStorage.getItem("authTokens")).access}`,
         },
-        body: JSON.stringify(editData), // Converting the data to JSON format for the request body
+        body: JSON.stringify(editData), 
       });
   
       if (!response.ok) {
         throw new Error('Failed to update profile');
       }
   
-      const updatedData = await response.json(); // You can handle the updated data if necessary
+      const updatedData = await response.json(); 
       setProfileData(updatedData);
       setIsEditing(false);
       setError('');
