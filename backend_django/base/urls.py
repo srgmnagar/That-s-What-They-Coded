@@ -29,4 +29,5 @@ urlpatterns = [
     path("delete_notification/", delete_notification, name="delete_notification"),
 
     path('extract_resume_skills/', extract_resume_skills, name='extract_resume_skills'),
+    path('generate-mcq/', generate_mcq, name='generate_mcq'),
 ]

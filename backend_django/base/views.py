@@ -717,3 +717,86 @@ def extract_resume_skills(request):
             'error': 'Failed to process resume',
             'details': str(e)
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+import random
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+
+# Sample MCQ database with difficulty levels
+SAMPLE_QUESTIONS = {
+    "Physics": {
+        "easy": [
+            ("What is the SI unit of force?", ["Newton", "Joule", "Watt", "Pascal"], "Newton"),
+            ("What is the speed of light?", ["3x10^8 m/s", "3x10^6 m/s", "3x10^10 m/s", "3x10^4 m/s"], "3x10^8 m/s")
+        ],
+        "medium": [
+            ("Which law states that for every action, there is an equal and opposite reaction?", 
+             ["Newton’s First Law", "Newton’s Second Law", "Newton’s Third Law", "Law of Conservation"], "Newton’s Third Law"),
+            ("Which fundamental force is responsible for keeping planets in orbit?", 
+             ["Gravitational", "Electromagnetic", "Nuclear", "Frictional"], "Gravitational")
+        ],
+        "hard": [
+            ("What is the escape velocity of Earth?", ["11.2 km/s", "9.8 m/s²", "3x10^8 m/s", "299,792,458 m/s"], "11.2 km/s"),
+            ("What is the unit of electrical resistance?", ["Ohm", "Volt", "Ampere", "Farad"], "Ohm")
+        ]
+    },
+    "Biology": {
+        "easy": [
+            ("What is the powerhouse of the cell?", ["Nucleus", "Mitochondria", "Ribosome", "Golgi Body"], "Mitochondria"),
+            ("What is the basic unit of life?", ["Cell", "Tissue", "Organ", "Organ System"], "Cell")
+        ],
+        "medium": [
+            ("Which part of the brain controls balance?", ["Cerebrum", "Cerebellum", "Medulla", "Thalamus"], "Cerebellum"),
+            ("What is the function of hemoglobin?", ["Transport oxygen", "Fight infection", "Digest food", "Break down fats"], "Transport oxygen")
+        ],
+        "hard": [
+            ("What is the term for programmed cell death?", ["Necrosis", "Apoptosis", "Mitosis", "Endocytosis"], "Apoptosis"),
+            ("Which enzyme unzips the DNA strands during replication?", ["Helicase", "Ligase", "Polymerase", "Primase"], "Helicase")
+        ]
+    }
+}
+
+@api_view(['POST'])
+def generate_mcq(request):
+    """
+    API to generate MCQs based on user input.
+    Expected fields: topic, num_questions, difficulty.
+    """
+    
+    topic = request.data.get("topic", "").strip()
+    num_questions = request.data.get("num_questions", 5)
+    difficulty = request.data.get("difficulty", "medium")
+
+    # Validate input fields
+    if not topic:
+        return Response({"error": "Please enter a topic"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    if topic not in SAMPLE_QUESTIONS:
+        return Response({"error": f"Topic '{topic}' not found"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    if difficulty not in SAMPLE_QUESTIONS[topic]:
+        return Response({"error": "Invalid difficulty level. Choose easy, medium, or hard."}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        num_questions = int(num_questions)
+        if num_questions <= 0:
+            return Response({"error": "Number of questions must be at least 1"}, status=status.HTTP_400_BAD_REQUEST)
+    except ValueError:
+        return Response({"error": "num_questions must be an integer"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Get available questions and sample
+    available_questions = SAMPLE_QUESTIONS[topic][difficulty]
+    selected_questions = random.sample(available_questions, min(num_questions, len(available_questions)))
+
+    # Prepare final MCQ list
+    mcq_list = []
+    for question, options, answer in selected_questions:
+        random.shuffle(options)
+        mcq_list.append({
+            "question": question,
+            "options": options,
+            "answer": answer
+        })
+
+    return Response({"topic": topic, "difficulty": difficulty, "mcqs": mcq_list}, status=status.HTTP_200_OK)
