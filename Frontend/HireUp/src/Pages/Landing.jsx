@@ -41,13 +41,16 @@ const Landing = () => {
                     </div>
                     <div className='mt-72 md:mt-96 lg:mt-0'>
                         <div className='mt-28'>
-                            <div className="absolute w-36 h-7 sm:w-52 sm:h-10 bg-[#4A9BD4] opacity-1 blur-xl rounded-full"></div>
+                            <div className='hover:translate-y-2 transition-all'>
+
+                            <div className="absolute w-36 h-7 sm:w-52 sm:h-10 bg-[#4A9BD4]  opacity-1 blur-xl rounded-full"></div>
                             <NavLink to='/recruiter/signup' className="font-Orbitron relative px-3 sm:px-8 py-2 text-white text-lg sm:text-xl font-normal rounded-full bg-transparent border-none cursor-pointer">
                                 Hire Smarter
                             </NavLink>
+                            </div>
                         </div>
                         <div className='mt-32 md:mt-48 lg:mt-40 flex justify-end mx-3 sm:mx-12'>
-                            <div>
+                            <div className='hover:translate-y-2 transition-all'>
                                 <div className="absolute w-36 h-7 sm:w-52 sm:h-10 bg-[#a569dd] opacity-1 blur-xl rounded-full"></div>
                                 <NavLink to='/candidate/signup' className="font-Orbitron relative  px-3 sm:px-8 py-2 text-white text-lg sm:text-xl font-normal rounded-full bg-transparent border-none cursor-pointer">
                                     Take a Test

@@ -11,6 +11,7 @@ function R_SignUp() {
     companyName: "",
     password: "",
     email: "",
+    number: ""
   });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
@@ -39,6 +40,10 @@ function R_SignUp() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(form.email)) {
       formErrors.email = "Enter a valid email format";
+    }
+    const phoneregex=/^[6-9]\d{9}$/;
+    if (!phoneregex.test(form.number)) {
+      formErrors.number = "Enter a valid phone number";
     }
 
     const passRegex =
@@ -114,7 +119,7 @@ function R_SignUp() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6 max-w-[85%] mx-auto">
+        <form onSubmit={handleSubmit} className="space-y-5 max-w-[85%] mx-auto">
           <div className="grid grid-cols-2 gap-4 font-Sora">
             <div>
               <input
@@ -165,6 +170,18 @@ function R_SignUp() {
               required
             />
             {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
+          </div>
+          <div>
+            <input
+              type="number"
+              id="number"
+              placeholder="Phone Number"
+              value={form.number}
+              onChange={handleChange}
+              className="peer w-full px-4 py-3  bg-transparent border border-[#ffffff6e] text-white placeholder-[#CACACA] focus:outline-none focus:border-[#ffffff] transition-colors"
+              required
+            />
+            {errors.number && <p className="text-red-500 text-xs">{errors.number}</p>}
           </div>
 
           <div className="relative">
