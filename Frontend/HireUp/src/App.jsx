@@ -9,6 +9,7 @@ import { AuthProvider } from './Components/AuthProvider';
 import Dashboard from './Pages/Recruiter/Dashboard';
 import ResumeUpload from './Pages/Candidate/ResumeUpload';
 import Profile from './Pages/Candidate/Profile';
+import CompanyProfile from './Pages/Recruiter/CompanyProfile';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="/recruiter/dashboard" element={<Dashboard />} />
             <Route path="/candidate/resumeupload" element={<ResumeUpload />} />
             <Route path="/candidate/profile" element={<Profile />} />
+            <Route path="/recruiter/profile" element={<CompanyProfile />} />
           </Routes>
         
       </AuthProvider>
