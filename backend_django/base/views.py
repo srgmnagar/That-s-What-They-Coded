@@ -20,6 +20,7 @@ from .serializers import (
 )
 from .utils import scan_resume
 
+
 # User Views
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -652,3 +653,25 @@ def delete_notification(request, pk):
     notification = get_object_or_404(Notification, pk=pk, user=request.user)
     notification.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def scan_resume_view(request):
+    """Scan a resume and return extracted details"""
+
+    serializer = ResumeScanSerializer(data=request.data)
+    
+    if serializer.is_valid():
+        resume_file = serializer.validated_data["resume"]
+        job_id = serializer.validated_data["job_id"]
+
+        # Get job skills from DB
+        job = get_object_or_404(JobOpportunity, id=job_id)
+        skills_list = job.required_skills  # Assuming it's a JSON field (list)
+
+        # Process the resume
+        extracted_data = scan_resume(resume_file, skills_list)
+
+        return Response(extracted_data, status=status.HTTP_200_OK)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
