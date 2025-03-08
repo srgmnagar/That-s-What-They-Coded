@@ -1,5 +1,6 @@
 import React from 'react'
 import CompanyDeets from '../../Components/CompanyDeets'
+import Nav from '../../Components/Nav'
 
 
 export default function CompanyProfile() {

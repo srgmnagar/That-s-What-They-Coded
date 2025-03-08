@@ -128,13 +128,14 @@ function Profile() {
   }
 
   return (
-    <div
-    style={{
-        background: 'linear-gradient(115deg, rgba(38, 0, 74, 0.73) 2.22%, rgba(105, 36, 171, 0.59) 103.12%)'
-    }}  className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div style={{
+      background: 'linear-gradient(115deg, rgba(38, 0, 74, 0.73) 2.22%, rgba(105, 36, 171, 0.59) 103.12%)'
+  }} className='min-h-screen py-8 flex p-5'>
+      <CandidateNav  />
+      
       <div className="max-w-4xl mx-auto">
 
-        <div className="bg-[#f0c8ff] shadow-xl rounded-2xl overflow-hidden">
+        <div className="bg-[#f0c8ff] w-[600px] shadow-xl rounded-2xl overflow-hidden">
           {/* Header */}
           <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-8 py-6">
             <div className="flex justify-between items-center">
