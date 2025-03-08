@@ -11,7 +11,7 @@ import { User } from 'lucide-react';
 function Nav() {
     return (
         <div>
-            <nav className='flex flex-col justify-evenly items-center  h-full bg-[#3A175C] rounded-3xl px-5 py-10'>
+            <nav className='flex flex-col justify-evenly items-center sticky h-[95vh] bg-[#3A175C] rounded-3xl px-5 py-10'>
                 <div className='flex flex-col justify-center items-center gap-7 h-full'>
 
                 <Link to={'/recruiter/dashboard'}>
