@@ -638,7 +638,7 @@ def extract_resume_skills(request):
     """
     Extract skills from a resume image and add them to the candidate's profile
     
-    Expects a file upload with key 'resume_image'
+    Expects a file upload with key resume_image
     Returns the updated list of skills for the candidate
     """
     # Check if the user has a profile and is a candidate
@@ -680,9 +680,8 @@ def extract_resume_skills(request):
             # Normalize skill name (lowercase, strip whitespace)
             skill_name = skill_name.strip().lower()
             
-            # Skip empty strings
-            if not skill_name:
-                continue
+            
+            if not skill_name: continue # Skip empty strings
                 
             # Get or create the skill in the database
             skill, created = Skill.objects.get_or_create(name=skill_name)
