@@ -78,10 +78,12 @@ def extract_phone(text):
 
 def extract_skills(text):
     skills = set()
+    skills_list = ["Python", "Java", "C++", "SQL", "Machine Learning", "Deep Learning","Data Science", "TensorFlow", "PyTorch", "NLP", "Computer Vision","Data Analysis", "Tableau", "Power BI", "Excel", "Hadoop", "Spark","AWS", "Azure", "Google Cloud", "Cybersecurity", "Networking","Linux", "Git", "Docker", "Kubernetes", "Leadership", "Communication","Problem Solving", "Teamwork", "Project Management"]
     skills.update(extract_skills_with_ner(text))
     skills.update(extract_top_keywords(text, top_n=15))
     skills.update(extract_skills_fuzzy(text))
-    return skills
+    found_skills= [skill for skill in skills_list if skill.lower() in text.lower()]
+    return found_skills
     # return list(skills)
 
 def scan_resume(uploaded_file):

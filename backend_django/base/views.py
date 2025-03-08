@@ -630,84 +630,73 @@ def delete_notification(request, pk):
 
 
 from .utils import scan_resume
+VALID_SKILLS = {
+    "python", "java", "c++", "javascript", "machine learning", "deep learning", 
+    "django", "flask", "sql", "data analysis", "data science", "tensorflow",
+    "pytorch", "nlp", "opencv", "git", "react", "angular", "docker", "kubernetes"
+}
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 @parser_classes([MultiPartParser, FormParser])
 def extract_resume_skills(request):
     """
-    Extract skills from a resume image and add them to the candidate's profile
-    
-    Expects a file upload with key resume_image
-    Returns the updated list of skills for the candidate
+    Extracts skills, email, and phone from a resume image and adds only valid skills to the candidate's profile.
     """
-    # Check if the user has a profile and is a candidate
     try:
         profile = Profile.objects.get(user=request.user)
         if profile.role != 'candidate':
             return Response({'error': 'Only candidates can upload resumes for skill extraction'},
-                           status=status.HTTP_403_FORBIDDEN)
+                            status=status.HTTP_403_FORBIDDEN)
     except Profile.DoesNotExist:
         return Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
-    
-    # Check if the candidate profile exists
+
     try:
         candidate_profile = CandidateProfile.objects.get(profile=profile)
     except CandidateProfile.DoesNotExist:
         return Response({'error': 'Candidate profile not found'}, status=status.HTTP_404_NOT_FOUND)
-    
-    # Validate the uploaded file using serializer
+
     serializer = ResumeUploadSerializer(data=request.data)
     if not serializer.is_valid():
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
     resume_image = serializer.validated_data['resume_image']
-    
+
     try:
-        # Call your ML function to extract skills from the resume
-        extracted_skills = scan_resume(resume_image)
-        print(extracted_skills.skills)
-        
-        if not extracted_skills:
-            return Response({'message': 'No skills were extracted from the resume',
-                            'new_skills': [],
-                            'current_skills': [skill.name for skill in candidate_profile.skills.all()]}, 
-                           status=status.HTTP_200_OK)
-        
-        # Process each extracted skill
+        # Call ML function to extract skills, email, and phone
+        extracted_data = scan_resume(resume_image)  
+        extracted_skills = extracted_data.get("skills", [])
+        extracted_email = extracted_data.get("email", "")
+        extracted_phone = extracted_data.get("phone", "")
+
+        # Filter extracted skills
+        filtered_skills = set()
+        for skill in extracted_skills:
+            skill = skill.strip().lower()
+            if skill in VALID_SKILLS:
+                filtered_skills.add(skill)
+
+        # Add new skills to candidate profile
         added_skills = []
-        for skill_name in extracted_skills:
-            # Normalize skill name (lowercase, strip whitespace)
-            skill_name = skill_name.strip().lower()
-            
-            
-            if not skill_name: continue # Skip empty strings
-                
-            # Get or create the skill in the database
+        for skill_name in filtered_skills:
             skill, created = Skill.objects.get_or_create(name=skill_name)
-            
-            # Add the skill to the candidate's profile if not already added
             if skill not in candidate_profile.skills.all():
                 candidate_profile.skills.add(skill)
                 added_skills.append(skill_name)
-        
-        # Prepare response data
+
+        candidate_profile.save()
+
         response_data = {
-            'message': f'Successfully processed resume and extracted {len(added_skills)} new skills',
+            'message': 'Successfully processed resume',
+            'email': extracted_email,
+            'phone': extracted_phone,
             'new_skills': added_skills,
             'current_skills': [skill.name for skill in candidate_profile.skills.all()]
         }
-        
-        # Use the response serializer
-        response_serializer = ExtractedSkillsSerializer(data=response_data)
-        if response_serializer.is_valid():
-            return Response(response_serializer.validated_data, status=status.HTTP_200_OK)
-        else:
-            # This should not happen with proper implementation but included for robustness
-            return Response(response_data, status=status.HTTP_200_OK)
-        
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
     except Exception as e:
-        # Log the error (you might want to add proper logging)
         import logging
         logger = logging.getLogger(__name__)
         logger.error(f"Error processing resume: {str(e)}")
@@ -716,6 +705,3 @@ def extract_resume_skills(request):
             'error': 'Failed to process resume',
             'details': str(e)
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
-
-
