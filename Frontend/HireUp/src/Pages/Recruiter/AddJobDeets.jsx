@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { PenSquare, Briefcase, MapPin, DollarSign, Calendar, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import Nav from '../../Components/Nav';
 
 function AddJobDeets() {
   const [jobDetails, setJobDetails] = useState({
@@ -50,134 +51,83 @@ function AddJobDeets() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-6">Add Job Details</h2>
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Job Title</label>
-          <input
-            type="text"
-            value={jobDetails.title}
-            onChange={(e) => setJobDetails({ ...jobDetails, title: e.target.value })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Job Description</label>
-          <textarea
-            value={jobDetails.description}
-            onChange={(e) => setJobDetails({ ...jobDetails, description: e.target.value })}
-            rows={4}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Company</label>
-          <input
-            type="text"
-            value={jobDetails.company}
-            onChange={(e) => setJobDetails({ ...jobDetails, company: e.target.value })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Location</label>
-          <input
-            type="text"
-            value={jobDetails.location}
-            onChange={(e) => setJobDetails({ ...jobDetails, location: e.target.value })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
-          />
-        </div>
-        <div className="flex items-center">
-          <label className="block text-sm font-medium text-gray-700 mr-2">Remote</label>
-          <input
-            type="checkbox"
-            checked={jobDetails.remote}
-            onChange={(e) => setJobDetails({ ...jobDetails, remote: e.target.checked })}
-            className="focus:ring-purple-500 h-4 w-4 border-gray-300"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Job Type</label>
-          <select
-            value={jobDetails.job_type}
-            onChange={(e) => setJobDetails({ ...jobDetails, job_type: e.target.value })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
-          >
-            <option value="full_time">Full Time</option>
-            <option value="part_time">Part Time</option>
-            <option value="contract">Contract</option>
-            <option value="internship">Internship</option>
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Salary Range</label>
-          <div className="flex space-x-4">
+<div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-900 via-purple-700 to-purple-500 p-6">
+      <div className="w-full max-w-lg bg-white p-8 rounded-xl shadow-lg">
+        <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">Add Test Details</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Test Title</label>
             <input
-              type="number"
-              value={jobDetails.salary_min}
-              onChange={(e) => setJobDetails({ ...jobDetails, salary_min: e.target.value })}
-              placeholder="Min Salary"
-              className="w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
-            />
-            <input
-              type="number"
-              value={jobDetails.salary_max}
-              onChange={(e) => setJobDetails({ ...jobDetails, salary_max: e.target.value })}
-              placeholder="Max Salary"
-              className="w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+              type="text"
+              value={testDetails.title}
+              onChange={(e) => setTestDetails({ ...testDetails, title: e.target.value })}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+              required
             />
           </div>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Experience (Years)</label>
-          <input
-            type="number"
-            value={jobDetails.experience_years}
-            onChange={(e) => setJobDetails({ ...jobDetails, experience_years: e.target.value })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Application Deadline</label>
-          <input
-            type="date"
-            value={jobDetails.application_deadline}
-            onChange={(e) => setJobDetails({ ...jobDetails, application_deadline: e.target.value })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Required Skills</label>
-          <input
-            type="text"
-            value={jobDetails.required_skills}
-            onChange={(e) => setJobDetails({ ...jobDetails, required_skills: e.target.value })}
-            placeholder="Comma-separated skills"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Preferred Skills</label>
-          <input
-            type="text"
-            value={jobDetails.preferred_skills}
-            onChange={(e) => setJobDetails({ ...jobDetails, preferred_skills: e.target.value })}
-            placeholder="Comma-separated skills"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
-          />
-        </div>
-        <div className="flex justify-end space-x-4">
-          <button
-            type="submit"
-            className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700"
-          >
-            Add Job
-          </button>
-        </div>
-      </form>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Description</label>
+            <textarea
+              value={testDetails.description}
+              onChange={(e) => setTestDetails({ ...testDetails, description: e.target.value })}
+              rows={3}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Test Type</label>
+            <select
+              value={testDetails.test_type}
+              onChange={(e) => setTestDetails({ ...testDetails, test_type: e.target.value })}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+            >
+              <option value="job">Job</option>
+              <option value="self_assessment">Self Assessment</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Time Limit (Minutes)</label>
+            <input
+              type="number"
+              value={testDetails.time_limit_minutes}
+              onChange={(e) => setTestDetails({ ...testDetails, time_limit_minutes: e.target.value })}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+            />
+          </div>
+
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              checked={testDetails.is_auto_generated}
+              onChange={(e) => setTestDetails({ ...testDetails, is_auto_generated: e.target.checked })}
+              className="h-4 w-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+            />
+            <label className="ml-2 text-sm text-gray-700">Auto-generate Questions</label>
+          </div>
+
+          <div className="flex justify-end space-x-4">
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-100"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
+    
   );
 }
 
