@@ -51,7 +51,10 @@ function AddJobDeets() {
   };
 
   return (
-<div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-900 via-purple-700 to-purple-500 p-6">
+<div style={{
+        background:
+          'linear-gradient(115deg, rgba(38, 0, 74, 0.73) 2.22%, rgba(105, 36, 171, 0.59) 103.12%)',
+      }} className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-900 via-purple-700 to-purple-500 p-6">
       <div className="w-full max-w-lg bg-white p-8 rounded-xl shadow-lg">
         <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">Add Test Details</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
