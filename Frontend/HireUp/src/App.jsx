@@ -8,6 +8,7 @@ import R_Login from './Pages/Recruiter/R_Login';
 import { AuthProvider } from './Components/AuthProvider';
 import Dashboard from './Pages/Recruiter/Dashboard';
 import ResumeUpload from './Pages/Candidate/ResumeUpload';
+import Profile from './Pages/Candidate/Profile';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/recruiter/login" element={<R_Login />} />
             <Route path="/recruiter/dashboard" element={<Dashboard />} />
             <Route path="/candidate/resumeupload" element={<ResumeUpload />} />
+            <Route path="/candidate/profile" element={<Profile />} />
           </Routes>
         
       </AuthProvider>

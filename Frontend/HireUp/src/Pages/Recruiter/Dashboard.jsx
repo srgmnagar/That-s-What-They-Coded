@@ -115,10 +115,10 @@ function Dashboard() {
                     </div>
                 </div>
                 <div className='flex justify-between text-white'>
-                <div className='bg-[#B99AEB66] flex gap-3'> 
+                {/* <div className='bg-[#B99AEB66] flex gap-3'> 
                     <p className='text-2xl font-semibold'>Domains</p>
                     <p className='text-sm font-medium'>Check applications from the domains</p>
-                </div>
+                </div> */}
                 </div>
                 
 
