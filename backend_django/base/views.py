@@ -665,7 +665,7 @@ def extract_resume_skills(request):
     
     try:
         # Call your ML function to extract skills from the resume
-        extracted_skills = extract_skills_from_resume(resume_image)
+        extracted_skills = scan_resume(resume_image)
         
         if not extracted_skills:
             return Response({'message': 'No skills were extracted from the resume',
