@@ -19,7 +19,13 @@ function CompanyDeets() {
 
   const fetchProfile = async () => {
     try {
-      const response = await fetch(api_link + "/base/recruiter_profile_detail/");
+      const response = await fetch(api_link + "base/recruiter_profile_detail/", {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          "Authorization": `Bearer ${JSON.parse(localStorage.getItem("authTokens")).access}`,
+        },
+      });
       const data = await response.json();
       setProfile(data);
     } catch (error) {
@@ -30,10 +36,11 @@ function CompanyDeets() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(api_link + "/base/recruiter_profile_detail/", {
+      const response = await fetch(api_link + "base/recruiter_profile_detail/", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${JSON.parse(localStorage.getItem("authTokens")).access}`,
         },
         body: JSON.stringify(profile),
       });
