@@ -233,6 +233,8 @@ def job_opportunity_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # CandidateApplication Views
+from django.db.models import Count
+
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def candidate_application_list(request):
@@ -246,8 +248,21 @@ def candidate_application_list(request):
                 applications = CandidateApplication.objects.filter(job_id__in=recruiter_jobs)
             else:
                 # For candidates, show their own applications
-                applications = CandidateApplication.objects.filter(candidate=request.user)
+                candidate_profile = CandidateProfile.objects.get(profile=profile)
+                candidate_skills = set(candidate_profile.skills.values_list('id', flat=True))
                 
+                # Filter applications based on skill match
+                filtered_applications = []
+                for application in CandidateApplication.objects.filter(candidate=request.user):
+                    job_skills = set(application.job.required_skills.values_list('id', flat=True))
+                    
+                    if job_skills:
+                        match_percentage = (len(candidate_skills & job_skills) / len(job_skills)) * 100
+                        if match_percentage >= 50:
+                            filtered_applications.append(application)
+                
+                applications = filtered_applications
+
             serializer = CandidateApplicationSerializer(applications, many=True)
             return Response(serializer.data)
         except Profile.DoesNotExist:
@@ -271,6 +286,7 @@ def candidate_application_list(request):
             
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
