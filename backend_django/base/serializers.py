@@ -355,3 +355,11 @@ class MCQRequestSerializer(serializers.Serializer):
     topic = serializers.CharField(required=True, max_length=100, error_messages={"required": "Please enter a topic"})
     num_questions = serializers.IntegerField(required=False, min_value=1, max_value=10, default=5)
     difficulty = serializers.ChoiceField(choices=["easy", "medium", "hard"], default="medium")
+    
+from rest_framework import serializers
+from .models import Candidate
+
+class CandidateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Candidate
+        fields = "__all__"

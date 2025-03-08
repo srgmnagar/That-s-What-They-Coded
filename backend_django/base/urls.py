@@ -30,4 +30,5 @@ urlpatterns = [
 
     path('extract_resume_skills/', extract_resume_skills, name='extract_resume_skills'),
     path('generate-mcq/', generate_mcq, name='generate_mcq'),
+    path("rank/", rank_candidates, name="rank_candidates"),
 ]

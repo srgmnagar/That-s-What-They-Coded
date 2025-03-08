@@ -800,3 +800,82 @@ def generate_mcq(request):
         })
 
     return Response({"topic": topic, "difficulty": difficulty, "mcqs": mcq_list}, status=status.HTTP_200_OK)
+
+import numpy as np
+import xgboost as xgb
+import random
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Candidate
+from .serializers import CandidateSerializer
+
+# Helper function to train ranking model
+def train_rank_model(X_train, y_train, q_train):
+    params = {
+        "objective": "rank:pairwise",
+        "eval_metric": "ndcg",
+        "eta": 0.1,
+        "max_depth": 6,
+        "subsample": 0.8,
+        "colsample_bytree": 0.8,
+        "lambda": 1.0
+    }
+
+    dtrain = xgb.DMatrix(X_train, label=y_train)
+    dtrain.set_group(q_train)
+    
+    rank_model = xgb.train(params, dtrain, num_boost_round=100)
+    return rank_model
+
+# Helper function to predict ranking
+def predict_ranking(rank_model, X_test):
+    dtest = xgb.DMatrix(X_test)
+    y_pred = rank_model.predict(dtest)
+    sorted_indices = np.argsort(-y_pred)  # Descending order
+    return sorted_indices
+
+@api_view(["POST"])
+@csrf_exempt
+
+def rank_candidates(request):
+    """
+    API to rank candidates based on their test performance.
+    Expected fields: test_score, total_time, total_easy, total_medium, total_hard
+    """
+    candidates = Candidate.objects.all()
+    if not candidates.exists():
+        return Response({"error": "No candidate data available"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Serialize data
+    serializer = CandidateSerializer(candidates, many=True)
+    data = serializer.data
+
+    # Convert to numpy array
+    X = np.array([[c["test_score"], c["total_time"], c["total_easy"], c["total_medium"], c["total_hard"]] for c in data])
+    y = np.array([c["test_score"] for c in data])  # Ranking based on test_score
+    query_groups = np.array([c["query_group"] for c in data])  # Assuming candidates have query groups
+
+    # Split dataset
+    unique_groups = np.unique(query_groups)
+    train_groups = unique_groups[: int(0.8 * len(unique_groups))]
+    test_groups = unique_groups[int(0.8 * len(unique_groups)) :]
+
+    train_indices = np.isin(query_groups, train_groups)
+    test_indices = np.isin(query_groups, test_groups)
+
+    X_train, y_train, q_train = X[train_indices], y[train_indices], query_groups[train_indices]
+    X_test, y_test, q_test = X[test_indices], y[test_indices], query_groups[test_indices]
+
+    # Count samples per group
+    train_group_counts = [np.sum(q_train == g) for g in np.unique(q_train)]
+    test_group_counts = [np.sum(q_test == g) for g in np.unique(q_test)]
+
+    # Train ranking model
+    model = train_rank_model(X_train, y_train, train_group_counts)
+    ranked_indices = predict_ranking(model, X_test)
+
+    ranked_candidates = [data[i] for i in ranked_indices]
+
+    return Response({"ranked_candidates": ranked_candidates}, status=status.HTTP_200_OK)
