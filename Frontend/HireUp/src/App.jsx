@@ -13,6 +13,8 @@ import CompanyProfile from './Pages/Recruiter/CompanyProfile';
 import AddJobDeets from './Pages/Recruiter/AddJobDeets';
 import TestEdit from './Pages/Recruiter/TestEdit';
 import TestCreation from './Pages/Recruiter/TestCreation';
+import Test from './Pages/Candidate/Test';
+import CandidateDashboard from './Pages/Candidate/CandidateDashboard';
 
 
 function App() {
@@ -33,6 +35,8 @@ function App() {
             <Route path="/recruiter/addjob" element={<AddJobDeets />} />
             <Route path="/recruiter/testcreation" element={<TestCreation />} />
             <Route path="/recruiter/testedit" element={<TestEdit />} />
+            <Route path="/candidate/test" element={<Test />} />
+            <Route path="/candidate/dashboard" element={<CandidateDashboard />} />
           </Routes>
         
       </AuthProvider>
