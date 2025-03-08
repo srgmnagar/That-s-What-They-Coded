@@ -6,6 +6,8 @@ import C_Login from './Pages/Candidate/C_Login';
 import R_SignUp from './Pages/Recruiter/R_SignUp';
 import R_Login from './Pages/Recruiter/R_Login';
 import { AuthProvider } from './Components/AuthProvider';
+import Dashboard from './Pages/Recruiter/Dashboard';
+import ResumeUpload from './Pages/Candidate/ResumeUpload';
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
             <Route path="/candidate/login" element={<C_Login />} />
             <Route path="/recruiter/signup" element={<R_SignUp />} />
             <Route path="/recruiter/login" element={<R_Login />} />
+            <Route path="/recruiter/dashboard" element={<Dashboard />} />
+            <Route path="/candidate/resumeupload" element={<ResumeUpload />} />
           </Routes>
         
       </AuthProvider>

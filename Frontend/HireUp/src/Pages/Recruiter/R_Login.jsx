@@ -28,7 +28,7 @@ function R_Login() {
         console.log("Refresh Token:", refreshToken);
 
         setAuth({ accessToken, refreshToken });
-        navigate("/main");
+        navigate("/recruiter/dashboard");
       })
       .catch((err) => {
         console.log("error ", err);
