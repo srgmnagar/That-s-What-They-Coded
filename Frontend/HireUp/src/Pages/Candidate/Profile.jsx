@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Pencil, FileText, Github, Linkedin, Briefcase, GraduationCap, Code, Clock, Save, X } from 'lucide-react';
+import CandidateNav from '../../Components/CandidateNav';
 
 function Profile() {
   const navigate = useNavigate();
@@ -92,12 +93,14 @@ function Profile() {
     setIsEditing(false);
   };
 
-  return (
-    <div
-    style={{
-        background: 'linear-gradient(115deg, rgba(38, 0, 74, 0.73) 2.22%, rgba(105, 36, 171, 0.59) 103.12%)'
-    }}  className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  return(
+    <div style={{
+      background: 'linear-gradient(115deg, rgba(38, 0, 74, 0.73) 2.22%, rgba(105, 36, 171, 0.59) 103.12%)'
+  }}  className='flex p-5 '>
+      <CandidateNav />
+   
       <div className="max-w-4xl mx-auto">
+
         <div className="bg-[#f0c8ff] shadow-xl rounded-2xl overflow-hidden">
           {/* Header */}
           <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-8 py-6">
@@ -271,10 +274,12 @@ function Profile() {
               </div>
             </div>
           </div>
-        </div>
+  
       </div>
     </div>
-  );
+
+    </div>
+  )
 }
 
 export default Profile;
