@@ -4,20 +4,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status
-from .models import (
-    Profile, CandidateProfile, RecruiterProfile, Skill, JobCategory,
-    JobOpportunity, Test, Question, QuestionChoice, CandidateApplication,
-    ApplicationStatusHistory, Answer, TestSession, TestResult, Interview,
-    Notification
-)
-from .serializers import (
-    UserSerializer, ProfileSerializer, CandidateProfileSerializer,
-    RecruiterProfileSerializer, SkillSerializer, JobCategorySerializer,
-    JobOpportunitySerializer, TestSerializer, QuestionSerializer,
-    QuestionChoiceSerializer, CandidateApplicationSerializer,
-    ApplicationStatusHistorySerializer, AnswerSerializer, TestSessionSerializer,
-    TestResultSerializer, InterviewSerializer, NotificationSerializer
-)
+from .models import *
+from .serializers import *
 
 # User Views
 @api_view(['GET'])
@@ -667,19 +655,21 @@ def extract_resume_skills(request):
     except CandidateProfile.DoesNotExist:
         return Response({'error': 'Candidate profile not found'}, status=status.HTTP_404_NOT_FOUND)
     
-    # Check if file is provided
-    if 'resume_image' not in request.FILES:
-        return Response({'error': 'No resume image provided'}, status=status.HTTP_400_BAD_REQUEST)
+    # Validate the uploaded file using serializer
+    serializer = ResumeUploadSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    resume_image = request.FILES['resume_image']
+    resume_image = serializer.validated_data['resume_image']
     
     try:
         # Call your ML function to extract skills from the resume
-        # You'll implement this function elsewhere
         extracted_skills = extract_skills_from_resume(resume_image)
         
         if not extracted_skills:
-            return Response({'message': 'No skills were extracted from the resume'}, 
+            return Response({'message': 'No skills were extracted from the resume',
+                            'new_skills': [],
+                            'current_skills': [skill.name for skill in candidate_profile.skills.all()]}, 
                            status=status.HTTP_200_OK)
         
         # Process each extracted skill
@@ -700,19 +690,31 @@ def extract_resume_skills(request):
                 candidate_profile.skills.add(skill)
                 added_skills.append(skill_name)
         
-        # Get all current skills for the response
-        current_skills = [skill.name for skill in candidate_profile.skills.all()]
-        
-        return Response({
+        # Prepare response data
+        response_data = {
             'message': f'Successfully processed resume and extracted {len(added_skills)} new skills',
             'new_skills': added_skills,
-            'current_skills': current_skills
-        }, status=status.HTTP_200_OK)
+            'current_skills': [skill.name for skill in candidate_profile.skills.all()]
+        }
+        
+        # Use the response serializer
+        response_serializer = ExtractedSkillsSerializer(data=response_data)
+        if response_serializer.is_valid():
+            return Response(response_serializer.validated_data, status=status.HTTP_200_OK)
+        else:
+            # This should not happen with proper implementation but included for robustness
+            return Response(response_data, status=status.HTTP_200_OK)
         
     except Exception as e:
         # Log the error (you might want to add proper logging)
-        print(f"Error processing resume: {str(e)}")
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error processing resume: {str(e)}")
+        
         return Response({
             'error': 'Failed to process resume',
             'details': str(e)
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+
+
