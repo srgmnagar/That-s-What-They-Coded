@@ -305,3 +305,31 @@ class NotificationSerializer(serializers.ModelSerializer):
         model = Notification
         fields = ['id', 'user', 'title', 'message', 'is_read', 'created_at']
         read_only_fields = ['id', 'created_at']
+
+
+
+class ResumeUploadSerializer(serializers.Serializer):
+    resume_image = serializers.ImageField(required=True)
+    
+    def validate_resume_image(self, value):
+        """
+        Validate that the uploaded file is an image and within size limits
+        """
+        # Check file size (limit to 5MB)
+        if value.size > 5 * 1024 * 1024:
+            raise serializers.ValidationError("Image file too large (max 5MB)")
+            
+        # Check file type
+        allowed_types = ['image/jpeg', 'image/png', 'image/tiff', 'image/bmp']
+        if value.content_type not in allowed_types:
+            raise serializers.ValidationError(
+                f"Unsupported file type. Allowed types: {', '.join(allowed_types)}"
+            )
+            
+        return value
+        
+class ExtractedSkillsSerializer(serializers.Serializer):
+    """Serializer for the response from the skill extraction endpoint"""
+    message = serializers.CharField()
+    new_skills = serializers.ListField(child=serializers.CharField())
+    current_skills = serializers.ListField(child=serializers.CharField())

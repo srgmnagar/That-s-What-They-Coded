@@ -3,7 +3,6 @@ from .views import *
 
 urlpatterns = [
     path("auth/", include("base.oauth.urls")),
-    # path('me/', CurrentUserView, name="CurrentUserView"),
     path("get_user_profile/", get_user_profile, name="get_user_profile"),
     path("profile_detail/", profile_detail, name="profile_detail"),
     path("candidate_profile_detail/", candidate_profile_detail, name="candidate_profile_detail"),
@@ -28,4 +27,6 @@ urlpatterns = [
     path("notification_list/", notification_list, name="notification_list"),
     path("mark_notification_read/", mark_notification_read, name="mark_notification_read"),
     path("delete_notification/", delete_notification, name="delete_notification"),
+
+    path('extract_resume_skills/', extract_resume_skills, name='extract_resume_skills'),
 ]

@@ -1,23 +1,12 @@
 from django.shortcuts import get_object_or_404
-from django.contrib.auth.models import User
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status
-from .models import (
-    Profile, CandidateProfile, RecruiterProfile, Skill, JobCategory,
-    JobOpportunity, Test, Question, QuestionChoice, CandidateApplication,
-    ApplicationStatusHistory, Answer, TestSession, TestResult, Interview,
-    Notification
-)
-from .serializers import (
-    UserSerializer, ProfileSerializer, CandidateProfileSerializer,
-    RecruiterProfileSerializer, SkillSerializer, JobCategorySerializer,
-    JobOpportunitySerializer, TestSerializer, QuestionSerializer,
-    QuestionChoiceSerializer, CandidateApplicationSerializer,
-    ApplicationStatusHistorySerializer, AnswerSerializer, TestSessionSerializer,
-    TestResultSerializer, InterviewSerializer, NotificationSerializer
-)
+from .models import *
+from .serializers import *
+
 
 # User Views
 @api_view(['GET'])
@@ -248,21 +237,8 @@ def candidate_application_list(request):
                 applications = CandidateApplication.objects.filter(job_id__in=recruiter_jobs)
             else:
                 # For candidates, show their own applications
-                candidate_profile = CandidateProfile.objects.get(profile=profile)
-                candidate_skills = set(candidate_profile.skills.values_list('id', flat=True))
+                applications = CandidateApplication.objects.filter(candidate=request.user)
                 
-                # Filter applications based on skill match
-                filtered_applications = []
-                for application in CandidateApplication.objects.filter(candidate=request.user):
-                    job_skills = set(application.job.required_skills.values_list('id', flat=True))
-                    
-                    if job_skills:
-                        match_percentage = (len(candidate_skills & job_skills) / len(job_skills)) * 100
-                        if match_percentage >= 50:
-                            filtered_applications.append(application)
-                
-                applications = filtered_applications
-
             serializer = CandidateApplicationSerializer(applications, many=True)
             return Response(serializer.data)
         except Profile.DoesNotExist:
@@ -651,3 +627,96 @@ def delete_notification(request, pk):
     notification = get_object_or_404(Notification, pk=pk, user=request.user)
     notification.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+from .utils import scan_resume
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser])
+def extract_resume_skills(request):
+    """
+    Extract skills from a resume image and add them to the candidate's profile
+    
+    Expects a file upload with key 'resume_image'
+    Returns the updated list of skills for the candidate
+    """
+    # Check if the user has a profile and is a candidate
+    try:
+        profile = Profile.objects.get(user=request.user)
+        if profile.role != 'candidate':
+            return Response({'error': 'Only candidates can upload resumes for skill extraction'},
+                           status=status.HTTP_403_FORBIDDEN)
+    except Profile.DoesNotExist:
+        return Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    # Check if the candidate profile exists
+    try:
+        candidate_profile = CandidateProfile.objects.get(profile=profile)
+    except CandidateProfile.DoesNotExist:
+        return Response({'error': 'Candidate profile not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    # Validate the uploaded file using serializer
+    serializer = ResumeUploadSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    resume_image = serializer.validated_data['resume_image']
+    
+    try:
+        # Call your ML function to extract skills from the resume
+        extracted_skills = scan_resume(resume_image)
+        print(extracted_skills.skills)
+        
+        if not extracted_skills:
+            return Response({'message': 'No skills were extracted from the resume',
+                            'new_skills': [],
+                            'current_skills': [skill.name for skill in candidate_profile.skills.all()]}, 
+                           status=status.HTTP_200_OK)
+        
+        # Process each extracted skill
+        added_skills = []
+        for skill_name in extracted_skills:
+            # Normalize skill name (lowercase, strip whitespace)
+            skill_name = skill_name.strip().lower()
+            
+            # Skip empty strings
+            if not skill_name:
+                continue
+                
+            # Get or create the skill in the database
+            skill, created = Skill.objects.get_or_create(name=skill_name)
+            
+            # Add the skill to the candidate's profile if not already added
+            if skill not in candidate_profile.skills.all():
+                candidate_profile.skills.add(skill)
+                added_skills.append(skill_name)
+        
+        # Prepare response data
+        response_data = {
+            'message': f'Successfully processed resume and extracted {len(added_skills)} new skills',
+            'new_skills': added_skills,
+            'current_skills': [skill.name for skill in candidate_profile.skills.all()]
+        }
+        
+        # Use the response serializer
+        response_serializer = ExtractedSkillsSerializer(data=response_data)
+        if response_serializer.is_valid():
+            return Response(response_serializer.validated_data, status=status.HTTP_200_OK)
+        else:
+            # This should not happen with proper implementation but included for robustness
+            return Response(response_data, status=status.HTTP_200_OK)
+        
+    except Exception as e:
+        # Log the error (you might want to add proper logging)
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error processing resume: {str(e)}")
+        
+        return Response({
+            'error': 'Failed to process resume',
+            'details': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+
+
