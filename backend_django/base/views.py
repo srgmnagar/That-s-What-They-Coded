@@ -18,6 +18,7 @@ from .serializers import (
     ApplicationStatusHistorySerializer, AnswerSerializer, TestSessionSerializer,
     TestResultSerializer, InterviewSerializer, NotificationSerializer
 )
+from .utils import scan_resume
 
 # User Views
 @api_view(['GET'])
