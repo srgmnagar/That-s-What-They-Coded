@@ -15,6 +15,7 @@ import TestEdit from './Pages/Recruiter/TestEdit';
 import TestCreation from './Pages/Recruiter/TestCreation';
 import Test from './Pages/Candidate/Test';
 import CandidateDashboard from './Pages/Candidate/CandidateDashboard';
+import Results from './Pages/Recruiter/Results';
 
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
             <Route path="/recruiter/testedit" element={<TestEdit />} />
             <Route path="/candidate/test" element={<Test />} />
             <Route path="/candidate/dashboard" element={<CandidateDashboard />} />
+            <Route path="/recruiter/results" element={<Results />} />
           </Routes>
         
       </AuthProvider>

@@ -362,4 +362,5 @@ from .models import Candidate
 class CandidateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Candidate
-        fields = "__all__"
+        fields = ['candidate_id', 'test_score', 'total_time', 'total_easy', 'total_medium', 'total_hard', 'query_group']
+
