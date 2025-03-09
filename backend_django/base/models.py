@@ -98,40 +98,22 @@ class JobOpportunity(models.Model):
 
 # Enhanced Test Model
 class Test(models.Model):
-    TEST_TYPE_CHOICES = (
-        ('job', 'Job'),
-        ('self_assessment', 'Self Assessment'),
-    )
-    
-    job = models.ForeignKey(JobOpportunity, on_delete=models.CASCADE, null=True, blank=True, related_name="test")
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
-    test_type = models.CharField(max_length=50, choices=TEST_TYPE_CHOICES, default='custom')
-    is_auto_generated = models.BooleanField(default=False)
-    time_limit_minutes = models.PositiveIntegerField(null=True, blank=True)
-    completed_in = models.PositiveIntegerField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Assign test to user
+    subject = models.CharField(max_length=100)
+    difficulty = models.CharField(max_length=50)
+    num_questions = models.IntegerField()
     
     def __str__(self):
         job_title = self.job.title if self.job else 'Self Assessment'
         return f"{self.title} for {job_title}"
 
-# Enhanced Question Model
+
+
+
 class Question(models.Model):
-    QUESTION_TYPE_CHOICES = (
-        ('multiple_choice', 'Multiple Choice'),
-        ('single_choice', 'Single Choice'),
-        ('text', 'Text Answer'),
-    )
-    
-    test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name="questions")
-    question_type = models.CharField(max_length=50, choices=QUESTION_TYPE_CHOICES)
-    text = models.TextField()
-    points = models.PositiveIntegerField(default=5)
-    order = models.PositiveIntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
+    test = models.ForeignKey(Test, related_name="questions", on_delete=models.CASCADE)
+    question_text = models.TextField()
+
     
     def __str__(self):
         return f"Question: {self.text[:50]}"
@@ -255,25 +237,16 @@ class Interview(models.Model):
     def __str__(self):
         return f"Interview: {self.application.candidate.username} - {self.scheduled_at}"
 
-# Notification Model
-class Notification(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
-    title = models.CharField(max_length=255)
-    message = models.TextField()
-    is_read = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+# Add this to your models.py and then run migrations again
+class Candidate(models.Model):
+    candidate_profile = models.OneToOneField('CandidateProfile', on_delete=models.CASCADE)
+    test_score = models.FloatField(default=0.0)
+    total_time = models.FloatField(default=0.0)
+    total_easy = models.IntegerField(default=0)
+    total_medium = models.IntegerField(default=0)
+    total_hard = models.IntegerField(default=0)
+    query_group = models.IntegerField(default=0)
     
     def __str__(self):
-        return f"Notification for {self.user.username}: {self.title}"
-    
-    class Meta:
-        ordering = ['-created_at']
-        
-class Candidate(models.Model):
-    candidate_id = models.AutoField(primary_key=True)
-    test_score = models.FloatField()
-    total_time = models.FloatField()
-    total_easy = models.IntegerField()
-    total_medium = models.IntegerField()
-    total_hard = models.IntegerField()
-    query_group = models.IntegerField()
+        return f"Candidate for {self.candidate_profile}"
+

@@ -1,132 +1,20 @@
-// import React from 'react'
-// import { useState } from 'react';
-// import Nav from '../../Components/Nav'
-
-// function TestCreation() {
-//   const [formData, setFormData] = useState({
-//     title: "",
-//     description: "",
-//     test_type: "job", // Default value
-//     time_limit_minutes: "",
-//     is_auto_generated: false,
-//   });
-
-//   const handleChange = (e) => {
-//     const { name, value, type, checked } = e.target;
-//     setFormData({
-//       ...formData,
-//       [name]: type === "checkbox" ? checked : value,
-//     });
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-
-//     try {
-//       const response = await fetch("http://127.0.0.1:8000/test_detail/", {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify(formData),
-//       });
-
-//       if (!response.ok) {
-//         throw new Error("Failed to create test.");
-//       }
-
-//       const data = await response.json();
-//       alert("Test created successfully!");
-//     } catch (error) {
-//       console.error("Error:", error);
-//       alert("Error creating test.");
-//     }
-//   };
-
-
-//   return (
-//     <div style={{
-//       background: 'linear-gradient(115deg, rgba(38, 0, 74, 0.73) 2.22%, rgba(105, 36, 171, 0.59) 103.12%)'
-//     }} className='flex p-5 h-screen'>
-//       <Nav />
-//       <div>
-//       <div className="p-5">
-//       <h2 className="text-xl font-bold mb-4">Create a Test</h2>
-//       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-//         <input
-//           type="text"
-//           name="title"
-//           placeholder="Title"
-//           value={formData.title}
-//           onChange={handleChange}
-//           className="p-2 border rounded"
-//           required
-//         />
-//         <textarea
-//           name="description"
-//           placeholder="Description"
-//           value={formData.description}
-//           onChange={handleChange}
-//           className="p-2 border rounded"
-//         />
-//         <select
-//           name="test_type"
-//           value={formData.test_type}
-//           onChange={handleChange}
-//           className="p-2 border rounded"
-//         >
-//           <option value="job">Job</option>
-//           <option value="self_assessment">Self Assessment</option>
-//         </select>
-//         <input
-//           type="number"
-//           name="time_limit_minutes"
-//           placeholder="Time Limit (minutes)"
-//           value={formData.time_limit_minutes}
-//           onChange={handleChange}
-//           className="p-2 border rounded"
-//         />
-//         <label className="flex items-center">
-//           <input
-//             type="checkbox"
-//             name="is_auto_generated"
-//             checked={formData.is_auto_generated}
-//             onChange={handleChange}
-//             className="mr-2"
-//           />
-//           Auto-generated
-//         </label>
-//         <button type="submit" className="p-2 bg-blue-500 text-white rounded">
-//           Submit
-//         </button>
-//       </form>
-//     </div>
-//       </div>
-//     </div>
-//   )
-// }
-
-// export default TestCreation
-
-
 import React, { useState } from 'react';
 import Nav from '../../Components/Nav';
 
 function TestCreation() {
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    test_type: "job", // Default value
-    time_limit_minutes: "",
-    is_auto_generated: false,
-    job: null, // Add job field
+    topic: "",
+    difficulty: "easy", // Default value
+    num_questions: "",
   });
 
+  let [questions, setQuestions] = useState([]);
+
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     });
   };
 
@@ -134,8 +22,8 @@ function TestCreation() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/base/test_detail/", {
-        method: "PUT",
+      const response = await fetch("http://127.0.0.1:8000/base/generate_mcq/", {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${JSON.parse(localStorage.getItem("authTokens")).access}`,
@@ -148,6 +36,9 @@ function TestCreation() {
       }
 
       const data = await response.json();
+      setQuestions(data.mcqs);
+      console.log(data.mcqs);
+
       alert("Test created successfully!");
     } catch (error) {
       console.error("Error:", error);
@@ -169,49 +60,32 @@ function TestCreation() {
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <input
             type="text"
-            name="title"
-            placeholder="Test Title"
-            value={formData.title}
+            name="topic"
+            placeholder="Topic (e.g., Physics)"
+            value={formData.topic}
             onChange={handleChange}
             className="p-2 border rounded"
             required
           />
-          <textarea
-            name="description"
-            placeholder="Test Description"
-            value={formData.description}
-            onChange={handleChange}
-            className="p-2 border rounded"
-          />
           <select
-            name="test_type"
-            value={formData.test_type}
+            name="difficulty"
+            value={formData.difficulty}
             onChange={handleChange}
             className="p-2 border rounded"
           >
-            <option value="job">Job</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
           </select>
           <input
             type="number"
-            name="time_limit_minutes"
-            placeholder="Time Limit (minutes)"
-            value={formData.time_limit_minutes}
+            name="num_questions"
+            placeholder="Number of Questions"
+            value={formData.num_questions}
             onChange={handleChange}
             className="p-2 border rounded"
+            required
           />
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              name="is_auto_generated"
-              checked={formData.is_auto_generated}
-              onChange={handleChange}
-              className="mr-2"
-            />
-            Auto-generated
-          </label>
-
-          
-
           <button type="submit" className="p-2 bg-blue-500 text-white rounded">
             Submit
           </button>
@@ -221,5 +95,28 @@ function TestCreation() {
   );
 }
 
-export default TestCreation;
+import { useNavigate } from "react-router-dom";
 
+const handleSubmit = async (event) => {
+    event.preventDefault();
+    
+    const testData = {
+        subject,
+        difficulty,
+        num_questions,
+    };
+
+    const response = await fetch("http://localhost:8000/api/tests/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(testData),
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+        navigate(`/tests/${data.id}/edit`);
+    }
+};
+
+
+export default TestCreation;

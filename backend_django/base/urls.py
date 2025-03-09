@@ -24,11 +24,10 @@ urlpatterns = [
     path("submit_answer/", submit_answer, name="submit_answer"),
     path("interview_list/", interview_list, name="interview_list"),
     path("interview_detail/", interview_detail, name="interview_detail"),
-    path("notification_list/", notification_list, name="notification_list"),
-    path("mark_notification_read/", mark_notification_read, name="mark_notification_read"),
-    path("delete_notification/", delete_notification, name="delete_notification"),
 
     path('extract_resume_skills/', extract_resume_skills, name='extract_resume_skills'),
-    path('generate-mcq/', generate_mcq, name='generate_mcq'),
+    path('generate_mcq/', generate_mcq, name='generate_mcq'),
     path("rank/", rank_candidates, name="rank_candidates"),
+
+    path('tests/<int:test_id>/questions/', get_test_questions, name='get_test_questions'),
 ]
