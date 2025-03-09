@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const App = () => {
+const Course = () => {
   const [jobs, setJobs] = useState([]);
   const [courses, setCourses] = useState([]);
 

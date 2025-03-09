@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import Nav from '../../Components/Nav';
+import { useNavigate } from 'react-router-dom';
 
 function TestCreation() {
+  const navigate = useNavigate(); 
   const [formData, setFormData] = useState({
     topic: "",
     difficulty: "easy", // Default value
@@ -40,6 +42,7 @@ function TestCreation() {
       console.log(data.mcqs);
 
       alert("Test created successfully!");
+      navigate("/recruiter/testedit");
     } catch (error) {
       console.error("Error:", error);
       alert("Error creating test.");
@@ -95,28 +98,28 @@ function TestCreation() {
   );
 }
 
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
-const handleSubmit = async (event) => {
-    event.preventDefault();
+// const handleSubmit = async (event) => {
+//     event.preventDefault();
     
-    const testData = {
-        subject,
-        difficulty,
-        num_questions,
-    };
+//     const testData = {
+//         subject,
+//         difficulty,
+//         num_questions,
+//     };
 
-    const response = await fetch("http://localhost:8000/api/tests/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(testData),
-    });
+//     const response = await fetch("http://localhost:8000/api/tests/", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify(testData),
+//     });
 
-    const data = await response.json();
-    if (response.ok) {
-        navigate(`/tests/${data.id}/edit`);
-    }
-};
+//     const data = await response.json();
+//     if (response.ok) {
+//         navigate(`/tests/${data.id}/edit`);
+//     }
+// };
 
 
 export default TestCreation;

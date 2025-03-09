@@ -38,7 +38,7 @@ const handleSubmit = async (e) => {
     });
 
     if (response.ok) {
-      navigate("/recruiter/dashboard");
+      navigate("/recruiter/testcreation");
     } else {
       const errorData = await response.json();
       console.error("Error adding job details:", errorData);
