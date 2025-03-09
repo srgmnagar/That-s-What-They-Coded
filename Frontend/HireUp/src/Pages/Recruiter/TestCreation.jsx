@@ -95,4 +95,28 @@ function TestCreation() {
   );
 }
 
+import { useNavigate } from "react-router-dom";
+
+const handleSubmit = async (event) => {
+    event.preventDefault();
+    
+    const testData = {
+        subject,
+        difficulty,
+        num_questions,
+    };
+
+    const response = await fetch("http://localhost:8000/api/tests/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(testData),
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+        navigate(`/tests/${data.id}/edit`);
+    }
+};
+
+
 export default TestCreation;

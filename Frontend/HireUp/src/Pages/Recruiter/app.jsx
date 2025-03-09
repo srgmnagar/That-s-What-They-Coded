@@ -94,5 +94,19 @@ const styles = {
     mcqContainer: { marginTop: "20px", textAlign: "left", maxWidth: "600px", margin: "auto" },
     mcq: { background: "#f8f9fa", padding: "10px", margin: "10px 0", borderRadius: "5px", border: "1px solid #ddd" },
 };
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import TestCreation from "./TestCreation";
+import TestEdit from "./TestEdit";
+
+function App() {
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<TestCreation />} />
+                <Route path="/tests/:testId/edit" element={<TestEdit />} />
+            </Routes>
+        </Router>
+    );
+}
 
 export default App;

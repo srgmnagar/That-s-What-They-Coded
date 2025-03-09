@@ -865,3 +865,18 @@ def rank_candidates(request):
     return Response({"ranked_candidates": ranked_candidates}, status=status.HTTP_200_OK)
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_test_questions(request, test_id):
+    """
+    Retrieves questions for a given test.
+    """
+    try:
+        test = Test.objects.get(id=test_id, user=request.user)  # Ensure user can access only their tests
+    except Test.DoesNotExist:
+        return Response({'error': 'Test not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    questions = test.questions.all()  # Related name should be defined in the Question model
+    serializer = QuestionSerializer(questions, many=True)
+    
+    return Response({"questions": serializer.data}, status=status.HTTP_200_OK)
