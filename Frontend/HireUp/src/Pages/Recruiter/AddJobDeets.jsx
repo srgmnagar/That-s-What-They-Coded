@@ -24,31 +24,31 @@ function AddJobDeets() {
   const navigate = useNavigate()
   const api_link = "http://127.0.0.1:8000/";
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const requiredSkillsArray = jobDetails.required_skills.split(',').map(skill => skill.trim());
-    const preferredSkillsArray = jobDetails.preferred_skills.split(',').map(skill => skill.trim());
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-      const response = await fetch(api_link + "base/job_opportunity_detail/", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${JSON.parse(localStorage.getItem("authTokens")).access}`,
-        },
-        body: JSON.stringify({
-          ...jobDetails,
-          required_skills: requiredSkillsArray,
-          preferred_skills: preferredSkillsArray,
-        }),
-      });
-      if (response.ok) {
-        navigate("/recruiter/dashboard");
-      }
-    } catch (error) {
-      console.error("Error adding job details:", error);
+  try {
+    const response = await fetch(api_link + "base/job_opportunity_detail/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${JSON.parse(localStorage.getItem("authTokens")).access}`,
+      },
+      body: JSON.stringify(jobDetails), // Just send jobDetails as is
+    });
+
+    if (response.ok) {
+      navigate("/recruiter/dashboard");
+    } else {
+      const errorData = await response.json();
+      console.error("Error adding job details:", errorData);
     }
-  };
+  } catch (error) {
+    console.error("Error adding job details:", error);
+  }
+};
+
+  
 
   return (
 <div style={{
