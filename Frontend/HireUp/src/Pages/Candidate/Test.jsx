@@ -319,7 +319,7 @@ console.log(accessToken); // Log the value of accessToken
   const handleSubmit = () => {
     setTestCompleted(true);
     alert(`Test completed! Your score is: ${calculateScore()} / ${questions.length}`);
-    navigate("/candidate/dashboard");
+    navigate("/candidate/profile");
   };
 
   return (
