@@ -364,3 +364,15 @@ class CandidateSerializer(serializers.ModelSerializer):
         model = Candidate
         fields = ['candidate_id', 'test_score', 'total_time', 'total_easy', 'total_medium', 'total_hard', 'query_group']
 
+from .models import Test, Question
+
+class TestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Test
+        fields = ['id', 'subject', 'difficulty', 'num_questions']
+
+
+class QuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = ['id', 'question_text']

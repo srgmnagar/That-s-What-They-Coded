@@ -98,40 +98,22 @@ class JobOpportunity(models.Model):
 
 # Enhanced Test Model
 class Test(models.Model):
-    TEST_TYPE_CHOICES = (
-        ('job', 'Job'),
-        ('self_assessment', 'Self Assessment'),
-    )
-    
-    job = models.ForeignKey(JobOpportunity, on_delete=models.CASCADE, null=True, blank=True, related_name="test")
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
-    test_type = models.CharField(max_length=50, choices=TEST_TYPE_CHOICES, default='custom')
-    is_auto_generated = models.BooleanField(default=False)
-    time_limit_minutes = models.PositiveIntegerField(null=True, blank=True)
-    completed_in = models.PositiveIntegerField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Assign test to user
+    subject = models.CharField(max_length=100)
+    difficulty = models.CharField(max_length=50)
+    num_questions = models.IntegerField()
     
     def __str__(self):
         job_title = self.job.title if self.job else 'Self Assessment'
         return f"{self.title} for {job_title}"
 
-# Enhanced Question Model
+
+
+
 class Question(models.Model):
-    QUESTION_TYPE_CHOICES = (
-        ('multiple_choice', 'Multiple Choice'),
-        ('single_choice', 'Single Choice'),
-        ('text', 'Text Answer'),
-    )
-    
-    test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name="questions")
-    question_type = models.CharField(max_length=50, choices=QUESTION_TYPE_CHOICES)
-    text = models.TextField()
-    points = models.PositiveIntegerField(default=5)
-    order = models.PositiveIntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
+    test = models.ForeignKey(Test, related_name="questions", on_delete=models.CASCADE)
+    question_text = models.TextField()
+
     
     def __str__(self):
         return f"Question: {self.text[:50]}"
