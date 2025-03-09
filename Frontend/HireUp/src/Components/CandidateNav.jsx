@@ -13,7 +13,7 @@ function CandidateNav() {
     <div className="">
       <nav className="flex flex-col justify-evenly  bg-[#3A175C] rounded-3xl px-3 py-10 h-[95vh]">
         <div className="flex flex-col justify-center items-center gap-7 min-h-[70vh]">
-          <Link>
+          <Link to={"/candidate/dashboard"}>
             <img className="w-10" src={dash} alt="" />
           </Link>
           <Link>
