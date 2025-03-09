@@ -81,7 +81,7 @@ function Dashboard() {
                             <div>
                                 <h2 className='text-2xl font-semibold mb-2'>Tests</h2>
                                 <div className='text-5xl font-bold mb-4'>231</div>
-                                <div className='text-violet-200'>Active: 63</div>
+                                <div className='text-violet-200'>Active: 85</div>
                             </div>
                             <Chart className='my-auto'
                                 chartType="PieChart"

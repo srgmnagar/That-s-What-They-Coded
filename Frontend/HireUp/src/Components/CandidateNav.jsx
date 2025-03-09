@@ -22,15 +22,15 @@ function CandidateNav() {
           <Link>
             <img className="w-10" src={community} alt="" />
           </Link>
-          <Link>
+          <Link to={"/candidate/course"}>
             <img className="w-10" src={jobs} alt="" />
           </Link>
-          <Link>
+          <Link to={"/candidate/test"}>
             <img className="w-8" src={tests} alt="" />
           </Link>
           
         </div>
-        <Link to={"/recruiter/profile"}>
+        <Link to={"/candidate/profile"}>
             <User size={35} className=" text-white" />
           </Link>
       </nav>

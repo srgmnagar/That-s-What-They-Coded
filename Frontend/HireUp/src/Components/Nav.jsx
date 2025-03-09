@@ -21,7 +21,7 @@ function Nav() {
                 <Link>
                 <img  className='w-10' src={calender} alt="" />
                 </Link>
-                <Link>
+                <Link to={'/recruiter/results'}>
                 <img  className='w-10' src={community} alt="" />
                 </Link>
                 <Link to={'/recruiter/addjob'}>
