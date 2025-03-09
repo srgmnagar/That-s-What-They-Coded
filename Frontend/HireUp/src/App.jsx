@@ -40,7 +40,7 @@ function App() {
             <Route path="/candidate/test" element={<Test />} />
             <Route path="/candidate/dashboard" element={<CandidateDashboard />} />
             <Route path="/recruiter/results" element={<Results />} />
-            <Route path="/recruiter/Course" element={<Course/>} />
+            <Route path="/candidate/course" element={<Course/>} />
           </Routes>
         
       </AuthProvider>

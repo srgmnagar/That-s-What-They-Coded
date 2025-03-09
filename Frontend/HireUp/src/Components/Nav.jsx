@@ -8,6 +8,7 @@ import tests from '../Images/RecruiterNav/tests.png'
 import Settings from '../Images/RecruiterNav/settings.png'
 import { User } from 'lucide-react';
 
+
 function Nav() {
     return (
         <div>
@@ -20,13 +21,13 @@ function Nav() {
                 <Link>
                 <img  className='w-10' src={calender} alt="" />
                 </Link>
-                <Link>
+                <Link to={'/recruiter/results'}>
                 <img  className='w-10' src={community} alt="" />
                 </Link>
                 <Link to={'/recruiter/addjob'}>
                 <img  className='w-10' src={jobs} alt="" />
                 </Link>
-                <Link>
+                <Link to={'/recruiter/testcreation'}>
                 <img  className='w-8' src={tests} alt="" />
                 </Link>
                 </div>
