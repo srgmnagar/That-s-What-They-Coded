@@ -613,33 +613,6 @@ def interview_detail(request, pk):
         interview.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-# Notification Views
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def notification_list(request):
-    """List notifications for the authenticated user"""
-    notifications = Notification.objects.filter(user=request.user)
-    serializer = NotificationSerializer(notifications, many=True)
-    return Response(serializer.data)
-
-@api_view(['PUT'])
-@permission_classes([IsAuthenticated])
-def mark_notification_read(request, pk):
-    """Mark a notification as read"""
-    notification = get_object_or_404(Notification, pk=pk, user=request.user)
-    notification.is_read = True
-    notification.save()
-    serializer = NotificationSerializer(notification)
-    return Response(serializer.data)
-
-@api_view(['DELETE'])
-@permission_classes([IsAuthenticated])
-def delete_notification(request, pk):
-    """Delete a notification"""
-    notification = get_object_or_404(Notification, pk=pk, user=request.user)
-    notification.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 from .utils import scan_resume
 VALID_SKILLS = {
@@ -841,28 +814,77 @@ def predict_ranking(rank_model, X_test):
 def rank_candidates(request):
     """
     API to rank candidates based on their test performance.
-    Expected fields: test_score, total_time, total_easy, total_medium, total_hard
     """
-    candidates = Candidate.objects.all()
-    if not candidates.exists():
-        return Response({"error": "No candidate data available"}, status=status.HTTP_400_BAD_REQUEST)
+    # Hardcoded candidates data with names
+    candidates = [
+        {
+            "candidate_id": 1,
+            "name": "Alice",
+            "test_score": 95.0,
+            "total_time": 120.5,
+            "total_easy": 8,
+            "total_medium": 5,
+            "total_hard": 2
+        },
+        {
+            "candidate_id": 2,
+            "name": "Bob",
+            "test_score": 88.0,
+            "total_time": 110.0,
+            "total_easy": 7,
+            "total_medium": 6,
+            "total_hard": 3
+        },
+        {
+            "candidate_id": 3,
+            "name": "Charlie",
+            "test_score": 91.0,
+            "total_time": 115.0,
+            "total_easy": 9,
+            "total_medium": 4,
+            "total_hard": 1
+        },
+        {
+            "candidate_id": 4,
+            "name": "David",
+            "test_score": 85.0,
+            "total_time": 130.0,
+            "total_easy": 6,
+            "total_medium": 7,
+            "total_hard": 2
+        },
+        {
+            "candidate_id": 5,
+            "name": "Eve",
+            "test_score": 92.0,
+            "total_time": 105.0,
+            "total_easy": 10,
+            "total_medium": 4,
+            "total_hard": 1
+        }
+    ]
 
-    # Serialize data
-    serializer = CandidateSerializer(candidates, many=True)
-    data = serializer.data
+    # Serialize data (using the same structure for simplicity)
+    data = candidates
 
-    # Convert to numpy array
+    # Convert to numpy array for ranking (test_score, total_time, total_easy, total_medium, total_hard)
     X = np.array([[c["test_score"], c["total_time"], c["total_easy"], c["total_medium"], c["total_hard"]] for c in data])
     y = np.array([c["test_score"] for c in data])  # Ranking based on test_score
 
     # Rank candidates based on test_score (higher is better)
     ranked_indices = np.argsort(y)[::-1]  # Sort in descending order
     n = 5
-    top_n_indices = ranked_indices[:5]  # Get the top n (5) candidates
+    top_n_indices = ranked_indices[:n]  # Get the top n (5) candidates
 
-    ranked_candidates = [{"candidate_id": data[i]["candidate_id"], "test_score": data[i]["test_score"]} for i in top_n_indices]
+    ranked_candidates = [{
+        "candidate_id": data[i]["candidate_id"],
+        "name": data[i]["name"],
+        "test_score": data[i]["test_score"]
+    } for i in top_n_indices]
 
     return Response({"ranked_candidates": ranked_candidates}, status=status.HTTP_200_OK)
+
+
 
 
 @api_view(['GET'])

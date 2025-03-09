@@ -237,25 +237,16 @@ class Interview(models.Model):
     def __str__(self):
         return f"Interview: {self.application.candidate.username} - {self.scheduled_at}"
 
-# Notification Model
-class Notification(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
-    title = models.CharField(max_length=255)
-    message = models.TextField()
-    is_read = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+# Add this to your models.py and then run migrations again
+class Candidate(models.Model):
+    candidate_profile = models.OneToOneField('CandidateProfile', on_delete=models.CASCADE)
+    test_score = models.FloatField(default=0.0)
+    total_time = models.FloatField(default=0.0)
+    total_easy = models.IntegerField(default=0)
+    total_medium = models.IntegerField(default=0)
+    total_hard = models.IntegerField(default=0)
+    query_group = models.IntegerField(default=0)
     
     def __str__(self):
-        return f"Notification for {self.user.username}: {self.title}"
-    
-    class Meta:
-        ordering = ['-created_at']
-        
-class Candidate(models.Model):
-    candidate_id = models.AutoField(primary_key=True)
-    test_score = models.FloatField()
-    total_time = models.FloatField()
-    total_easy = models.IntegerField()
-    total_medium = models.IntegerField()
-    total_hard = models.IntegerField()
-    query_group = models.IntegerField()
+        return f"Candidate for {self.candidate_profile}"
+
