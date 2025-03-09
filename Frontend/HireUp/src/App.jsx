@@ -16,6 +16,7 @@ import TestCreation from './Pages/Recruiter/TestCreation';
 import Test from './Pages/Candidate/Test';
 import CandidateDashboard from './Pages/Candidate/CandidateDashboard';
 import Results from './Pages/Recruiter/Results';
+import Course from './Pages/Candidate/Course';
 
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
             <Route path="/candidate/test" element={<Test />} />
             <Route path="/candidate/dashboard" element={<CandidateDashboard />} />
             <Route path="/recruiter/results" element={<Results />} />
+            <Route path="/recruiter/Course" element={<Course/>} />
           </Routes>
         
       </AuthProvider>
