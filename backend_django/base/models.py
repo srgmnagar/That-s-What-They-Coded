@@ -66,7 +66,7 @@ class JobOpportunity(models.Model):
         ('closed', 'Closed'),
         ('filled', 'Filled'),
     )
-    
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
     title = models.CharField(max_length=255)
     slug = models.SlugField(unique=True)
     description = models.TextField()
