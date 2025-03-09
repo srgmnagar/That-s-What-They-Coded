@@ -1,11 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import (
-    Profile, CandidateProfile, RecruiterProfile, Skill, JobCategory,
-    JobOpportunity, Test, Question, QuestionChoice, CandidateApplication,
-    ApplicationStatusHistory, Answer, TestSession, TestResult, Interview,
-    Notification
-)
+from .models import *
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -317,12 +312,6 @@ class InterviewSerializer(serializers.ModelSerializer):
                 
         return data
 
-class NotificationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Notification
-        fields = ['id', 'user', 'title', 'message', 'is_read', 'created_at']
-        read_only_fields = ['id', 'created_at']
-
 
 
 class ResumeUploadSerializer(serializers.Serializer):
@@ -356,13 +345,11 @@ class MCQRequestSerializer(serializers.Serializer):
     num_questions = serializers.IntegerField(required=False, min_value=1, max_value=10, default=5)
     difficulty = serializers.ChoiceField(choices=["easy", "medium", "hard"], default="medium")
     
-from rest_framework import serializers
-from .models import Candidate
-
 class CandidateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Candidate
-        fields = ['candidate_id', 'test_score', 'total_time', 'total_easy', 'total_medium', 'total_hard', 'query_group']
+        fields = ['candidate_profile', 'test_score', 'total_time', 'total_easy', 'total_medium', 'total_hard', 'query_group']
+
 
 from .models import Test, Question
 
